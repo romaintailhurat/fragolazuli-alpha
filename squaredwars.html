@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+ <h1>S Q U A R E D W A R S</h1>
+ <p id="res"></p>
+
+ <button id="connection">connection</button>
+ <input id="message" type="textarea"/>
+ <button id="trigger">send a message!</button>
+
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+ <script type="text/javascript" src="/_ah/channel/jsapi"></script>
+ <script type="text/javascript">
+  //channel handling
+    function onOpened() {
+    	console.log('channel opened with token : {{token}}');
+    };
+
+    function onMessage(m) {
+    	console.log('onmessage : ' + m.data);
+      var previous = $('#res').html();
+      $('#res').html(previous + 'Message reçu : ' + m.data);
+    };
+
+    function onError(e) {
+    	console.log('onerror : ' + e);
+    };
+
+    function onClose(m) {
+    	console.log('onclose : ' + m);
+    }
+
+    //---------------
+    //sending message
+    //---------------
+    function send(message) {
+      console.log('sending message as JSON');
+      var xhr = new XMLHttpRequest(),
+        jsonMessage = {'message' : message};
+      xhr.open('POST', '/squaredwars?m=' + JSON.stringify(jsonMessage), true);
+      xhr.send();
+    };
+
+    
+  $(document).ready(function(){
+  	$('#connection').bind('click', function() {
+  		//le token est celui créé pour le client côté serveur
+  		channel = new goog.appengine.Channel('{{token}}');
+	    socket = channel.open();
+    	socket.onopen = onOpened;
+    	socket.onmessage = onMessage;
+    	socket.onerror = onError;
+    	socket.onclose = onClose;
+  	});
+
+
+  	$('#trigger').bind('click', function() {
+      var messageToSend = $('#message').val();
+  		send(messageToSend);
+  	})
+  });
+ </script>
+</body>
+</html>

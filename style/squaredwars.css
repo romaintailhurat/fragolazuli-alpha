@@ -1,0 +1,29 @@
+/* 
+
+SQUAREDWARS
+
+*/
+
+body {
+  font-size:3em;
+  font-family:Verdana;
+  color : #643E91;
+}
+
+.row {
+  padding: 0.2em;
+  margin  : 0.1em;
+}
+
+.row:hover {
+}
+
+.cell {
+  padding:0.2em;
+  margin: 0.1em;
+}
+
+.cell:hover {
+  background-color:#EB352A;
+  color: #F5AB7A;
+}

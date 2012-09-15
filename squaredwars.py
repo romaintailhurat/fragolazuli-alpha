@@ -20,7 +20,7 @@ class SquaredWarsHandler(webapp2.RequestHandler):
 		message = self.request.get('m')
 		jsonMessage = json.JSONDecoder().decode(message)
 		#TODO : how to log to the gae log ?
-		channel.send_message(CHAN_ID, jsonMessage)
+		channel.send_message(CHAN_ID, message)
 
 
 handlers = [('/', SquaredWarsHandler)]

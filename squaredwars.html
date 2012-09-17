@@ -53,7 +53,7 @@
     //-------- Grid creation
     
     $('#grid-generation').bind('click', function() {
-      var g = generateGrid(5,5);
+      var g = generateGrid(10,5);
       displayGrid(g);  
     });
 
@@ -64,6 +64,14 @@
       send(messageToSend);
     })
   });
+
+    //-------- POST : new game
+    $('#create-game').bind('click', function() {
+      $.post('/squaredwars/create', function(data) {
+        debug('post to /squaredwars/create');
+        alert(data);
+      });
+    })
  </script>
 
 </head>
@@ -77,7 +85,8 @@
  </div>
  
  <div id="grid-area">
-
+  <button id="grid-generation">grid-generation</button>
+  <button id="create-game">new game</button>
  </div>
  
 </body>

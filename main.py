@@ -18,7 +18,7 @@ import webapp2
 import jinja2
 import os
 
-from squaredwars import SquaredWarsHandler
+from squaredwars import SWMainHandler, SWGameHandler, SWGameCreation
 
 #see https://developers.google.com/appengine/docs/python/gettingstartedpython27/templates
 jinja_environment = jinja2.Environment(
@@ -31,6 +31,9 @@ class MainHandler(webapp2.RequestHandler):
 
 
 handlers = [('/', MainHandler),
-			('/squaredwars',SquaredWarsHandler)]
+			('/squaredwars',SWMainHandler), #hmm, on doit pouvoir faire mieux =/
+			('/squaredwars/',SWMainHandler),
+			('/squaredwars/(\d+)',SWGameHandler),
+			('/squaredwars/create',SWGameCreation)]
 
 app = webapp2.WSGIApplication(handlers, debug=True)

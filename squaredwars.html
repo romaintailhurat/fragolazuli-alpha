@@ -63,15 +63,18 @@
       var messageToSend = $('#message').val();
       send(messageToSend);
     })
-  });
 
     //-------- POST : new game
+
     $('#create-game').bind('click', function() {
-      $.post('/squaredwars/create', function(data) {
-        debug('post to /squaredwars/create');
-        alert(data);
-      });
-    })
+      debug('ask for a new game using POST request');
+      $.post('create', function(data) {
+        debug(data);
+      })
+    });
+  });
+
+    
  </script>
 
 </head>

@@ -50,29 +50,7 @@
     socket.onerror = onError;
     socket.onclose = onClose;
 
-    //-------- Grid creation
-    
-    $('#grid-generation').bind('click', function() {
-      var g = generateGrid(10,5);
-      displayGrid(g);  
-    });
-
-    //-------- Sending message
-
-    $('#trigger').bind('click', function() {
-      var messageToSend = $('#message').val();
-      send(messageToSend);
-    })
-
-    //-------- POST : new game
-
-    $('#create-game').bind('click', function() {
-      debug('ask for a new game using POST request');
-      $.post('create', function(data) {
-        debug(data);
-      })
-    });
-  });
+   });
 
     
  </script>

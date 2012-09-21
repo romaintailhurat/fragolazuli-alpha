@@ -40,19 +40,14 @@ class SWMainHandler(webapp2.RequestHandler):
 #----------- GAME Handler
 
 class SWGameHandler(webapp2.RequestHandler):
-    def get(self, *args, **kwargs):
-        """
-        try :
-            gameIdAsAnInt = int(gameId)
-            game = Game.get_by_id(gameIdAsAnInt)
-            if(game != None):
-                self.response.out.write("Game #%s exist : %s" % (gameId, game))
-            else:
-                self.response.out.write("Game doesn't exist")    
-        except ValueError:
-            self.response.out.write("There was an error")
-        """
-        self.response.out.write("arg0 : %s" % args[0])
+    def get(self):
+        gameId = self.request.get("game_id")
+        game = Game.get(gameId)
+        message ="game_id : %s has status : %s" % (gameId, game.state)
+        template = jinja_environment.get_template('squaredwars.play.html')
+        self.response.out.write(template.render({'message' : message}))
+
+#----------- GAME Creation Handler
 
 class SWGameCreation(webapp2.RequestHandler):
     def post(self):

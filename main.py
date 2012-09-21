@@ -33,7 +33,7 @@ class MainHandler(webapp2.RequestHandler):
 handlers = [('/', MainHandler),
 			('/squaredwars',SWMainHandler), #hmm, on doit pouvoir faire mieux =/
 			('/squaredwars/',SWMainHandler),
-			('/squaredwars/<game_id>',SWGameHandler),
+			('/squaredwars/play',SWGameHandler),
 			('/squaredwars/create',SWGameCreation)]
 
 app = webapp2.WSGIApplication(handlers, debug=True)

@@ -104,6 +104,5 @@ class SWGameCreation(webapp2.RequestHandler):
         game.generateGrid(10,10)
         game.put()
         gameId = game.key()
-        resp = {"gameId" : str(gameId)}
-        self.response.content_type = 'text/json'
-        self.response.out.write(resp)
+        #self.response.content_type = 'application/json'
+        self.response.out.write('{"gameId" : "%s"}' % str(gameId))

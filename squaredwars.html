@@ -74,8 +74,8 @@
 
       $.post(DEV_URL, function(data) {
         debug(data);
-        var link = "play?game_id=" + $.parseJSON(data).gameId;
-        $('#creation-message').text("Link to your game : " + link);
+        var link = '/squaredwars/play?game_id=' + $.parseJSON(data).gameId;
+        $('#creation-message').html('Link to your game : <a href="' + link + '">' + link + '</a>');
       });
     });
 

@@ -68,10 +68,17 @@
 
     $('#create-game').bind('click', function() {
       debug('ask for a new game using POST request');
-      $.post('create', function(data) {
+      //Trouble with relative path !!! that behave differently in dev and prod
+      var DEV_URL = 'create',
+          PROD_URL = 'squaredwars/create';
+
+      $.post(DEV_URL, function(data) {
         debug(data);
-      })
+        var link = "play?game_id=" + $.parseJSON(data).gameId;
+        $('#creation-message').text("Link to your game : " + link);
+      });
     });
+
   });
 
     
@@ -90,6 +97,7 @@
  <div id="grid-area">
   <button id="grid-generation">grid-generation</button>
   <button id="create-game">new game</button>
+  <p id="creation-message"></p>
  </div>
  
 </body>

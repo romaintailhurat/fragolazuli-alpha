@@ -37,7 +37,6 @@
       xhr.open('POST', '/squaredwars?m=' + JSON.stringify(jsonMessage), true);
       xhr.send();
     };
-
     
   $(document).ready(function(){
 
@@ -50,6 +49,9 @@
     socket.onerror = onError;
     socket.onclose = onClose;
 
+
+    //TEST
+    displayGrid({{grid}});
    });
 
     
@@ -64,10 +66,11 @@
   <input id="message" type="textarea"/>
   <button id="trigger">send a message!</button>
  </div>
+
+ <div>{{message}}</div>
  
  <div id="grid-area">
-  <button id="grid-generation">grid-generation</button>
-  <button id="create-game">new game</button>
+  
  </div>
  
 </body>

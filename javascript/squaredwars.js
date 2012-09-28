@@ -13,17 +13,17 @@ var TYPES = ['T','R'],
 
 var GAME = {};
 
-GAME.logic = {};
+//----- Models
 
-GAME.models = {
-  'sonde' : {
-    'getCost':function() {
-      return 2;
-    },
-    
-    '' : function() {}
+var GridModel = Backbone.Model.extend({});
+
+//----- Views
+
+var GridView = Backbone.View.extend({
+  render : function() {
+    $(this.el).html(this.model.grid);
   }
-};
+});
 
 //-------------- FUNCTIONS
 

@@ -10,20 +10,27 @@ body {
   color : #643E91;
 }
 
-.row {
-  padding: 0.2em;
-  margin  : 0.1em;
+.g-row {
+	padding: 0.2em;
+	margin  : 0.4em;
 }
 
-.row:hover {
+.g-row:hover {
 }
 
-.cell {
+.g-cell {
+	display:inline;
   padding:0.2em;
   margin: 0.1em;
+  border : 0.2em #FFF solid;
 }
 
-.cell:hover {
+.g-cell:hover {
   background-color:#EB352A;
-  color: #F5AB7A;
+  color: #EB352A;
+  border : 0.2em #F5AB7A solid;
+}
+
+.hidden {
+  background-color: #643E91;
 }

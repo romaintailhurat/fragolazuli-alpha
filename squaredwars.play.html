@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+ <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
  <link rel="stylesheet" type="text/css" href="/style/squaredwars.css">
  <!-- LIBS -->
  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
  <script type="text/javascript" src="/_ah/channel/jsapi"></script>
  <script type="text/javascript" src="/javascript/lib/underscore-min.js"></script>
  <script type="text/javascript" src="/javascript/lib/backbone-min.js"></script>
+ <script type="text/javascript" src="/javascript/lib/handlebars-1.0.rc.1.js"></script>
  <!-- MAIN -->
  <script type="text/javascript" src="/javascript/squaredwars.js"></script>
  <script type="text/javascript">
@@ -40,7 +41,7 @@
       xhr.open('POST', '/squaredwars?m=' + JSON.stringify(jsonMessage), true);
       xhr.send();
     };
-    
+
   $(document).ready(function(){
 
     //-------- Connection
@@ -53,22 +54,30 @@
     socket.onclose = onClose;
 
     //-------- Instanciation models
-    var gridModel = new GridModel({
+    GAME.gridModel = new GridModel({
       'grid': {{grid}}
-      });
-
-    console.log(gridModel.grid);
-
-    //-------- Intanciation view
-    var gridView = new GridView({
-      'model' : gridModel,
-      'el' : '#grid-area'
     });
 
-    gridView.render();
+    //-------- Intanciation view
+    GAME.gridView = new GridView({
+      'model' : GAME.gridModel,
+      'id' : 'grid-area'
+    });
 
-    //TEST
-    //displayGrid({{grid}});
+    GAME.gridView.render();
+
+    //-------- TESTS
+    var sondeM = new SondeModel();
+    _.extend(sondeM, Backbone.Events);
+    sondeM.on('sonde:create', function() {
+      debug('sonde created');
+      $('#stack-wip').append('<div>S...</div>');
+    });
+    $('#sonde-creation').bind('click',function(){
+      sondeM.trigger('sonde:create');
+    });
+    //-------- /TESTS
+
    });
 
     
@@ -76,19 +85,37 @@
 
 </head>
 <body>
- <h1>S Q U A R E D W A R S</h1>
+  <div class="row-fluid">
+    <div class="span6">
+      <h1>S Q U A R E D W A R S</h1>
+    </div>
+    <div class="span5 offset1">
+      {{message}}
+    </div>
+  </div>
 
- <div id="message-area">
-  <p id="res"></p>
-  <input id="message" type="textarea"/>
-  <button id="trigger">send a message!</button>
- </div>
+  <div class="row-fluid">
+    <div id="grid-area" class="span9">
+    </div>
+    <div id="stack-build" class="span1">
+      <h2>BUILD</h2>
+      <a href="#" id="sonde-creation"><div>S (3)</div></a>
+      <div>D (5)</div>
+      <div>M (3)</div>
+    </div>
+    <div id="stack-wip" class="span1">
+      <h2>WIP</h2>
+    </div>
+    <div class="span1">
+      <h2>USE</h2>
+    </div>
+  </div>
 
- <div>{{message}}</div>
+  <div class="row-fluid">
+    <div id="resource-area"></div>
+  </div>
  
- <div id="grid-area">
-  
- </div>
  
 </body>
+<script></script>
 </html>

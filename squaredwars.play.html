@@ -69,9 +69,15 @@
     //-------- TESTS
     var sondeM = new SondeModel();
     _.extend(sondeM, Backbone.Events);
+
     sondeM.on('sonde:create', function() {
       debug('sonde created');
-      $('#stack-wip').append('<div>S...</div>');
+      var id = Math.floor(Math.random()*1000); //random numeric ID
+      $('#stack-wip').append('<div id='+id+'>S...</div>'); //add element
+      setTimeout(function(){
+        $('#'+id).remove(); //remove element after 3 seconds
+        $('#stack-use').append('<div>S !</div>');
+      },3000);
     });
     $('#sonde-creation').bind('click',function(){
       sondeM.trigger('sonde:create');
@@ -106,7 +112,7 @@
     <div id="stack-wip" class="span1">
       <h2>WIP</h2>
     </div>
-    <div class="span1">
+    <div id="stack-use" class="span1">
       <h2>USE</h2>
     </div>
   </div>

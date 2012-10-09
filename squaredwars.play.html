@@ -47,6 +47,9 @@
 
   $(document).ready(function(){
 
+    //-------- START ??
+    GAME.start();
+
     //-------- Connection
     //le token est celui créé pour le client côté serveur
     channel = new goog.appengine.Channel('{{token}}');
@@ -81,27 +84,29 @@
     //-------- EVENTING
 
     //when the model change, the view is updated
-    GAME.resourceStackModel.on('change', GAME.resourceStackView.render);
+    GAME.resourceStackModel.on('change', function() {
+      GAME.resourceStackView.render();
+    });
 
     //-------- TESTS
     var sondeM = new SondeModel();
     _.extend(sondeM, Backbone.Events);
 
     sondeM.on('sonde:create', function() {
-
+      //the player has enough resources to buy the sonde
       if (GAME.resourceStackModel.subtract(sondeM.get('value'))) {
         debug('sonde created');
         
-        var id = Math.floor(Math.random()*1000); //random numeric ID
-        $('#stack-wip').append('<div id='+id+'>S...</div>'); //add element
+        var id = Math.floor(Math.random()*1000000); //random numeric ID
+        $('#stack-wip').append('<div id="'+id+'">S...</div>'); //add element
         setTimeout(function(){
           //remove element from WIP after 3 seconds
           //and add a new one in USE
           $('#'+id).remove(); 
-          $('#stack-use').append('<div>S !</div>');
+          $('#stack-use').append('<div id="'+id+'">S !</div>');
         },3000);  
       }
-
+      //the player dont have enough resources
       else {
         alert('not enough $$$ !');
       }
@@ -148,7 +153,7 @@
   </div>
 
   <div class="row-fluid">
-    <div id="duration" class="span3"></div>
+    <div id="clock" class="span3"></div>
     <div id="resource-area" class="span6 offset3"></div>
   </div>
  

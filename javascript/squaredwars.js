@@ -13,8 +13,10 @@ var TYPES = ['T','R'],
 //----- Module contenant la partie en cours
 var GAME = {};
 
-//duration in seconds
-GAME.duration = 0;
+GAME.state = 'created'; // /!\ still exists on the server #TODO synchronize ?
+
+//game time in seconds
+GAME.clock = 0;
 
 //----- Timer
 
@@ -23,19 +25,24 @@ YUI().use('event', function(Y) {
   setInterval(function() {Y.fire('clock:tick');},1000);
   //-event listener
   Y.on('clock:tick', function() {
-    GAME.duration += 1;
-    //debug('duration : ' + duration);
+    GAME.clock += 1;
+    //debug('clock : ' + clock);
     //display seconds on page
-    $('#duration').html(GAME.duration + "secs");
+    $('#clock').html(GAME.clock + "secs");
   });
 });
 
 
-//----- Models
+  //------------//
+ //   MODELS   //
+//------------//
+
 //--- Grid
+
 var GridModel = Backbone.Model.extend({});
 
 //--- Sonde
+
 var SondeModel = Backbone.Model.extend({
   defaults : {
     'value' : 3 
@@ -43,11 +50,12 @@ var SondeModel = Backbone.Model.extend({
 });
 
 //--- ResourceStack
+
 /*
-Holds resources held by the player
+Holds resources of the player
 */
 var ResourceStackModel = Backbone.Model.extend({
-  //player starts with 3 resources
+  //player starts with x resources
   defaults : {
     'stack' : 5
   },
@@ -85,8 +93,14 @@ var ResourceStackModel = Backbone.Model.extend({
   }
 });
 
-//----- Views
+  //------------//
+ //   VIEWS    //
+//------------//
 
+//----- GridView
+/*
+Display the grid
+*/
 var GridView = Backbone.View.extend({
   render : function() {
     debug("rendering grid view to div with id : " + this.el.id);
@@ -98,8 +112,16 @@ var GridView = Backbone.View.extend({
   }
 });
 
+//----- SondeView
+
 var SondeView = Backbone.View.extend({});
 
+
+//------ ResourceStackView
+/*
+Display the resources available to the player through the
+#template-resource
+*/
 var ResourceStackView = Backbone.View.extend({
   el : '#resource-area',
 
@@ -119,7 +141,6 @@ var ResourceStackView = Backbone.View.extend({
         $(this.el).html(html);
   }
 });
-//----- Logic
 
 //-------------- UTILS
 
@@ -130,9 +151,9 @@ function debug(message) {
 }
 
 /**
-@param grid
+@param elId id of the element in which the grid will be displayed
+@param grid the grid, as given by the server
 */
-
 function displayGrid(elId, grid) {
   
   //chaque ligne du grid
@@ -144,4 +165,14 @@ function displayGrid(elId, grid) {
   });
 }
 
-  
+  //------------//
+ // GAME LOOP  //
+//------------//
+
+GAME.start = function() {
+  debug('Game has started !');
+  GAME.state = 'started';
+  var count = 0;
+  /*while(true) {
+  }*/
+};

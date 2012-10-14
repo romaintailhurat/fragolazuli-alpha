@@ -67,7 +67,8 @@
     GAME.resourceStackModel = new ResourceStackModel();
   
 
-    //-------- Intanciation view
+    //-------- Intanciation views
+
     GAME.gridView = new GridView({
       'model' : GAME.gridModel,
       'id' : 'grid-area'
@@ -81,6 +82,18 @@
 
     GAME.resourceStackView.render();
 
+    GAME.sondesView =  new SondesView();
+
+    //-------- Instanciation collections
+
+    GAME.sondes = new SondesCollection();
+    //We're adding a sonde
+    GAME.sondes.on('add remove', function() {
+      var numberOfSondes= this.length;
+      debug('adding a sonde to collection trigger the rendering of the sonde view');
+      GAME.sondesView.render(numberOfSondes);
+ });
+
     //-------- EVENTING
 
     //when the model change, the view is updated
@@ -89,7 +102,9 @@
     });
 
     //-------- TESTS
-    var sondeM = new SondeModel();
+
+    //---- sonde creation
+    /*var sondeM = new SondeModel();
     _.extend(sondeM, Backbone.Events);
 
     sondeM.on('sonde:create', function() {
@@ -97,6 +112,9 @@
       if (GAME.resourceStackModel.subtract(sondeM.get('value'))) {
         debug('sonde created');
         
+        GAME.sondes.add()
+
+        //TODO use a specific views for sondes
         var id = Math.floor(Math.random()*1000000); //random numeric ID
         $('#stack-wip').append('<div id="'+id+'">S...</div>'); //add element
         setTimeout(function(){
@@ -110,12 +128,34 @@
       else {
         alert('not enough $$$ !');
       }
-
-      
-    });
+    });*/
 
     $('#sonde-creation').bind('click',function(){
-      sondeM.trigger('sonde:create');
+      //sondeM.trigger('sonde:create');
+      if (GAME.resourceStackModel.subtract(VALUES['sonde'])) {
+        var randomId = Math.floor(Math.random()*1000000); //random numeric ID
+        var sonde = new SondeModel({
+          id:randomId
+        });
+
+        GAME.sondes.add(sonde); //on 'add', trigger sondesview render function
+      }
+      else {
+       alert('not enough $$$ !'); 
+      }
+    });
+
+    //----- fog of war
+    $('.g-cell').bind('click', function(e) {
+      debug('g-cell clicked id: ' + e.target.id);
+      if(GAME.sondes.length > 0) {
+        var idOfFirst = GAME.sondes.first().id;
+        GAME.sondes.remove(idOfFirst);
+        $('#'+e.target.id).removeClass('hidden');
+      }
+      else {
+        alert('Dont have any sonde !');
+      }
     });
     //-------- /TESTS
 
@@ -149,6 +189,7 @@
     </div>
     <div id="stack-use" class="span1">
       <h2>USE</h2>
+      <div id="sondes-area"></div>
     </div>
   </div>
 
@@ -159,7 +200,14 @@
  
  
 </body>
+<!-- TEMPLATES -->
+<!-- TODO : could be externalize, see A. Osmani MVC :
+http://bit.ly/RdIW2R -->
 <script id="template-resource" type="text/html">
   <div><%= stack %>/30</div>
+</script>
+
+<script id="template-sondes" type="text/html">
+  <div>S x <%= numberOfSondes %></div>
 </script>
 </html>

@@ -4,16 +4,26 @@
 
 //-------------- CONSTS
 
-var TYPES = ['T','R'],
-    TYPES_WITH_WEIGHT = {'T':0.9,'R':0.2},
-    TYPES_FREQ = {'T': 0,'R' : 0},
+var VALUES = {
+    //resource costs
+      'sonde' : 3,
+      'dome' : 5,
+      'missile' : 3,
+      'starting-stack' : 10
+    },
+    TIMINGS = {
+      //seconds to build complete
+      'buildings' : {
+        'sonde' : 3
+      }
+    },
     DEBUG = true;
 
 //-------------- GAME
 //----- Module contenant la partie en cours
 var GAME = {};
 
-GAME.state = 'created'; // /!\ still exists on the server #TODO synchronize ?
+GAME.state = 'created'; // /!\ already exists on the server #TODO synchronize ?
 
 //game time in seconds
 GAME.clock = 0;
@@ -45,7 +55,7 @@ var GridModel = Backbone.Model.extend({});
 
 var SondeModel = Backbone.Model.extend({
   defaults : {
-    'value' : 3 
+    'value' : VALUES['sonde']
   }
 });
 
@@ -57,7 +67,7 @@ Holds resources of the player
 var ResourceStackModel = Backbone.Model.extend({
   //player starts with x resources
   defaults : {
-    'stack' : 5
+    'stack' : VALUES['starting-stack']
   },
 
   add : function(quant) {
@@ -93,13 +103,23 @@ var ResourceStackModel = Backbone.Model.extend({
   }
 });
 
+   //-------------//
+  // COLLECTIONS //
+ //-------------//
+
+ //----- Sondes of the player
+ var SondesCollection =  Backbone.Collection.extend({
+  model : SondeModel
+ });
+
+
   //------------//
  //   VIEWS    //
 //------------//
 
 //----- GridView
 /*
-Display the grid
+  Display the grid
 */
 var GridView = Backbone.View.extend({
   render : function() {
@@ -112,9 +132,24 @@ var GridView = Backbone.View.extend({
   }
 });
 
-//----- SondeView
+//----- SondesView
+/*
+  Representing sondes stack
+ */
+var SondesView = Backbone.View.extend({
 
-var SondeView = Backbone.View.extend({});
+  el : '#sondes-area',
+
+  render : function(numberOfSondes) {
+    debug('rendering sondes collection');
+    debug('numberOfSondes : ' + numberOfSondes);
+    var context = { 'numberOfSondes' : numberOfSondes },
+        template = _.template($('#template-sondes').html()),
+        html = template(context);
+
+    $(this.el).html(html);
+  }
+});
 
 
 //------ ResourceStackView

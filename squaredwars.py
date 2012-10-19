@@ -102,7 +102,7 @@ class SWGameHandler(webapp2.RequestHandler):
 class SWGameCreation(webapp2.RequestHandler):
     def post(self):
         game = Game()
-        game.generateGrid(5, 20)
+        game.generateGrid(10, 20)
         game.put()
         gameId = game.key()
         #self.response.content_type = 'application/json'

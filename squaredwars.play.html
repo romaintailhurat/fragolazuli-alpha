@@ -166,18 +166,28 @@
 
 </head>
 <body>
-  <div class="row-fluid">
+
+  <header class="row-fluid">
     <div class="span6">
       <h1>S Q U A R E D W A R S</h1>
     </div>
     <div class="span5 offset1">
       {{message}}
     </div>
+  </header>
+
+  <div class="row-fluid">
+    <div id="clock" class="span3"></div>
+    <div id="resource-area" class="span6 offset3"></div>
   </div>
 
   <div class="row-fluid">
-    <div id="grid-area" class="span9">
-    </div>
+    <div id="grid-area" class="span9"></div>
+  </div>
+
+  <!-- ANCIENNE SECTION ITEMS-->
+  <!--
+  <div class="row-fluid">
     <div id="stack-build" class="span1">
       <h2>BUILD</h2>
       <a href="#" id="sonde-creation"><div>S (3)</div></a>
@@ -192,11 +202,28 @@
       <div id="sondes-area"></div>
     </div>
   </div>
+  -->
 
+  <!-- NOUVELLE SECTION ITEMS-->
   <div class="row-fluid">
-    <div id="clock" class="span3"></div>
-    <div id="resource-area" class="span6 offset3"></div>
+    <div id="sondes" class="container">
+      <a href="#" id="sonde-creation">+</a>
+      <div id="sondes-area">
+        <!-- ETAT INITIAL DE LA VUE -->
+        <div class="item active">S</div>
+        <div class="counter">0</div>
+      </div>
+      
+    </div>
+    <div class="container">
+      <div class="item">D</div>
+    </div>
+    <div class="container">
+      <div class="item">M</div>
+    </div>
   </div>
+
+
  
  
 </body>
@@ -208,6 +235,7 @@ http://bit.ly/RdIW2R -->
 </script>
 
 <script id="template-sondes" type="text/html">
-  <div>S x <%= numberOfSondes %></div>
+  <div class="item active">S</div>
+  <div class="counter"><%= numberOfSondes %></div>
 </script>
 </html>

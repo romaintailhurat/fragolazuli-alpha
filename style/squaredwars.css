@@ -5,32 +5,85 @@ SQUAREDWARS
 */
 
 body {
-  font-size:1em;
-  font-family:Verdana;
+  font-size: 1em;
+  font-family: Courier;
   color : #643E91;
 }
 
 .g-row {
-	padding: 0.2em;
-	margin  : 0.4em;
+  height: 3em;
+	/*padding: 0.2em;
+	margin  : 0.4em;*/
 }
 
 .g-row:hover {
 }
 
 .g-cell {
-	display:inline;
-  padding:0.2em;
-  margin: 0.1em;
-  border : 0.2em #FFF solid;
+	display : inline;
+  padding: 1em;
+  /*margin: 0.1em;
+  border : 0.2em #FFF solid;*/
 }
 
 .g-cell:hover {
   background-color:#EB352A;
   color: #EB352A;
-  border : 0.2em #F5AB7A solid;
+  /*border : 0.2em #F5AB7A solid;*/
 }
 
 .hidden {
   background-color: #643E91;
+}
+
+/**********
+SQUARES
+**********/
+
+.cube {
+  height: 3em;
+  width: 3em;
+  min-height: 3em;
+  min-width: 3em;
+}
+
+/**********
+ITEMS : sonde / dome / missile
+**********/
+
+div.item {
+  height: 3em;
+  width: 3em;
+  margin: 1em;
+  color: grey;
+  background-color:silver;
+  text-align: center;
+  vertical-align: center;
+}
+
+div.active {
+  color: blue;
+  background-color: cyan;
+}
+
+div.item:hover {
+  color: grey;
+  background-color:silver;
+  -webkit-transform: scale(1.05, 1.05);
+}
+
+@-webkit-keyframes nope {
+0% {
+    background-color:silver; 
+  }
+50% {
+    background-color:red;
+  }
+100% {
+    background-color:silver;
+  }
+}
+
+div.nope {
+  -webkit-animation : nope 0.3s;
 }

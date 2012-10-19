@@ -195,7 +195,7 @@ function displayGrid(elId, grid) {
   _.map(grid, function(row, rowIndex) {
     $(elId).append('<div id="'+rowIndex+'" class="g-row"></div>');
     _.map(row, function(cell, cellIndex) {
-      $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="g-cell hidden">'+cell+'</div>');
+      $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+'</div>');
     });
   });
 }

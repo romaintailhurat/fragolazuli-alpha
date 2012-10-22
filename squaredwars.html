@@ -80,7 +80,7 @@
       var PROD_URL = 'squaredwars/create',
           DEV_URL = 'create';
 
-      $.post(DEV_URL, function(data) {
+      $.post(PROD_URL, function(data) {
         debug(data);
         var link = '/squaredwars/play?game_id=' + $.parseJSON(data).gameId;
         $('#creation-message').html('Link to your game : <a href="' + link + '">' + link + '</a>');

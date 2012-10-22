@@ -23,7 +23,10 @@ GAME_STATE_MACHINE = {
     'in progress' : 'closed'
 }
 
-TYPES = {'T' : 'T','R' : 'R'}
+TYPES = {
+    'T' : 'T',
+    'R' : 'R',
+    }
 TYPES_WITH_WEIGHT = {'T':0.9,'R':0.2}
 TYPES_FREQ = {'T': 0,'R' : 0}
 
@@ -37,21 +40,67 @@ TYPES_FREQ = {'T': 0,'R' : 0}
 class Game(db.Model):
     state = 'created'
     grid = []
+    players = {
+        'player1' : '',
+        'player2' : ''
+    }
 
+    """
+    Generate the grid map for the game. We start by choosing a type of
+    cell (T or R) for each position ij ; after that, we choose of position
+    on a R type cell for each starting dome.
+    """
     def generateGrid(self, m, n):
+
+        resourceTilesLocation = []
+        
+        #generate basic map with T and R
         for i in range(m):
             arrayToPush = []
 
             for j in range(n):
                 cell = self.generateTypeOfCell()
                 arrayToPush.append(cell)
+                if cell == 'R' :
+                    resourceTilesLocation.append(str(i) + str(j))
             
             self.grid.append(arrayToPush)
+
+        positionsDic = self.generatePlayersStartingDomePositions(resourceTilesLocation)
+
+        player1StartingDome_I = int(positionsDic['P1'][0])
+        player1StartingDome_J = int(positionsDic['P1'][1])
+
+        player2StartingDome_I = int(positionsDic['P2'][0])
+        player2StartingDome_J = int(positionsDic['P2'][1])
+
+        self.grid[player1StartingDome_I][player1StartingDome_J] = 'D1'
+        self.grid[player2StartingDome_I][player2StartingDome_J] = 'D2'
+
+    """
+    Determining a position for each starting dome based on an array containing
+    the coordinates of each R type cell
+    """
+    def generatePlayersStartingDomePositions(self, resourceTilesLocation):
+        #add players starting domes
+        #for player1
+        randomPosition1 = randint(0, len(resourceTilesLocation))
+        randomPosition2 = randomPosition1
+        player1StartingDomeLocation = resourceTilesLocation[randomPosition1]
+        player2StartingDomeLocation = ''
+
+        #and then for player2
+        while (randomPosition2 == randomPosition1) : 
+            randomPosition2 = randint(0, len(resourceTilesLocation))
+            player2StartingDomeLocation = resourceTilesLocation[randomPosition2]
+
+        return {'P1' : player1StartingDomeLocation, 'P2' : player2StartingDomeLocation}
+
     
     """
     Generate a type of cell, using weight in TYPES_WITH_WEIGHT
     for drawing.
-    @return a type defined in TYPES
+    @return one of the type defined in TYPES
     """
     def generateTypeOfCell(self):
         numberOfTypes = len(TYPES)
@@ -85,17 +134,29 @@ class SWGameHandler(webapp2.RequestHandler):
         game = Game.get(gameId)
         message ="game_id : %s has status : %s" % (gameId, game.state)
 
+        currentPlayer = ''
+        if game.players['player1'] == '' :
+            currentPlayer = 'player1'
+            game.players['player1'] = 'player1'
+        elif game.players['player2'] == '' :
+            currentPlayer = 'player2'
+            game.players['player1'] = 'player2'
+
         #channel creation
-        token = channel.create_channel(CHAN_ID)
+        token = channel.create_channel(currentPlayer)
 
         template = jinja_environment.get_template('squaredwars.play.html')
         self.response.out.write(template.render(
             {
             'message' : message,
              'token' : token, 
-             'grid' : game.grid
+             'grid' : game.grid,
+             'player' : currentPlayer
              })
         )
+
+    def post(self):
+        pass
 
 #----------- GAME Creation Handler
 

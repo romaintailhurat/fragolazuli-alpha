@@ -118,7 +118,9 @@ class SWMainHandler(webapp2.RequestHandler):
     def get(self):
     	token = channel.create_channel(CHAN_ID)
     	template = jinja_environment.get_template('squaredwars.html')
-        self.response.out.write(template.render({'token' : token}))
+        query = Game.all()
+        res = query.fetch(10)
+        self.response.out.write(template.render({'token' : token, 'res' : res}))
 
     def post(self):
 		message = self.request.get('m')
@@ -141,6 +143,8 @@ class SWGameHandler(webapp2.RequestHandler):
         elif game.players['player2'] == '' :
             currentPlayer = 'player2'
             game.players['player1'] = 'player2'
+        else :
+            currentPlayer = 'spectator'
 
         #channel creation
         token = channel.create_channel(currentPlayer)

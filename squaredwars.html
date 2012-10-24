@@ -2,6 +2,7 @@
 <html>
 <head>
 
+ <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
  <link rel="stylesheet" type="text/css" href="/style/squaredwars.css">
 
   <!-- LIBS -->
@@ -77,10 +78,10 @@
     $('#create-game').bind('click', function() {
       debug('ask for a new game using POST request');
       //Trouble with relative path !!! that behave differently in dev and prod
-      var PROD_URL = 'squaredwars/create',
-          DEV_URL = 'create';
+      var DEV_URL = 'squaredwars/create',
+          PROD_URL = 'create';
 
-      $.post(PROD_URL, function(data) {
+      $.post(DEV_URL, function(data) {
         debug(data);
         var link = '/squaredwars/play?game_id=' + $.parseJSON(data).gameId;
         $('#creation-message').html('Link to your game : <a href="' + link + '">' + link + '</a>');
@@ -94,19 +95,22 @@
 
 </head>
 <body>
- <h1>S Q U A R E D W A R S</h1>
 
- <div id="message-area">
-  <p id="res"></p>
-  <input id="message" type="textarea"/>
-  <button id="trigger">send a message!</button>
- </div>
+  <div class="container">
+    <h1>W&#178;</h1>
+    <div id="grid-area">
+      <button id="create-game" class="btn">new game</button>
+      <p id="creation-message"></p>
+    </div>
+    <div>
+      {% for game in res %}
+      <div><a href="/squaredwars/play?game_id={{game.key()}}">{{ game.key() }}</a> <> {{ game.state }}</div>
+      {% endfor %}
+    </div>
+  </div>
  
- <div id="grid-area">
-  <button id="grid-generation">grid-generation</button>
-  <button id="create-game">new game</button>
-  <p id="creation-message"></p>
- </div>
+
+
  
 </body>
 </html>

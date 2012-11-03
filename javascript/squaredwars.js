@@ -30,18 +30,13 @@ GAME.clock = 0;
 
 //----- Timer
 
-YUI().use('event', function(Y) {
-  //-tick
-  setInterval(function() {Y.fire('clock:tick');},1000);
-  //-event listener
-  Y.on('clock:tick', function() {
-    GAME.clock += 1;
-    //debug('clock : ' + clock);
-    //display seconds on page
-    $('#clock').html(GAME.clock + "secs");
-  });
-});
+//tick every second
+createjs.Ticker.setInterval(1000);
 
+createjs.Ticker.addListener(function() {
+  GAME.clock += 1;
+  $('#clock').html(GAME.clock + "secs");
+});
 
   //------------//
  //   MODELS   //
@@ -129,6 +124,25 @@ var GridView = Backbone.View.extend({
         elId = '#'+this.el.id;
     displayGrid(elId,gridToBeDisplayed);
     
+  },
+
+  displayStartingDome: function(player) {
+    var grid = this.model.get('grid'),
+        cellValue;
+
+    if (player === 'player1') { cellValue = 'D1'; }
+    else if (player === 'player2') { cellValue = 'D2'; }
+
+    for (var i in grid) { 
+      for (var j in grid[i]) {
+        var cell = grid[i][j],
+            index = i.toString()+j.toString();
+        if (cell === cellValue) {
+          debug('index : ' + index);
+          $('#'+index).removeClass('hidden');
+        }
+      }
+    }
   }
 });
 
@@ -194,8 +208,15 @@ function displayGrid(elId, grid) {
   //chaque ligne du grid
   _.map(grid, function(row, rowIndex) {
     $(elId).append('<div id="'+rowIndex+'" class="g-row"></div>');
+    //every cell of the current row
     _.map(row, function(cell, cellIndex) {
-      $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+'</div>');
+      if(cell === 'D1' || cell === 'D2') {
+        $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+'</div>');
+      }
+      else {
+        $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+'</div>');  
+      }
+      
     });
   });
 }
@@ -208,6 +229,4 @@ GAME.start = function() {
   debug('Game has started !');
   GAME.state = 'started';
   var count = 0;
-  /*while(true) {
-  }*/
 };

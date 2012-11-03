@@ -3,15 +3,15 @@
 <head>
  <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
  <link rel="stylesheet" type="text/css" href="/style/squaredwars.css">
- <!-- LIBS -->
- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
- <script src="http://yui.yahooapis.com/3.7.2/build/yui/yui-min.js"></script>
  
+ <!-- LIBS -->
+ <script type="text/javascript" src="/javascript/lib/jquery-1.8.2.min.js"></script>
  <script type="text/javascript" src="/_ah/channel/jsapi"></script>
  <script type="text/javascript" src="/javascript/lib/underscore-min.js"></script>
  <script type="text/javascript" src="/javascript/lib/backbone-min.js"></script>
  <script type="text/javascript" src="/javascript/lib/handlebars-1.0.rc.1.js"></script>
- 
+ <script type="text/javascript" src="/javascript/lib/easeljs-0.5.0.min.js"></script>
+
  <!-- MAIN -->
  <script type="text/javascript" src="/javascript/squaredwars.js"></script>
  <script type="text/javascript">
@@ -103,33 +103,6 @@
 
     //-------- TESTS
 
-    //---- sonde creation
-    /*var sondeM = new SondeModel();
-    _.extend(sondeM, Backbone.Events);
-
-    sondeM.on('sonde:create', function() {
-      //the player has enough resources to buy the sonde
-      if (GAME.resourceStackModel.subtract(sondeM.get('value'))) {
-        debug('sonde created');
-        
-        GAME.sondes.add()
-
-        //TODO use a specific views for sondes
-        var id = Math.floor(Math.random()*1000000); //random numeric ID
-        $('#stack-wip').append('<div id="'+id+'">S...</div>'); //add element
-        setTimeout(function(){
-          //remove element from WIP after 3 seconds
-          //and add a new one in USE
-          $('#'+id).remove(); 
-          $('#stack-use').append('<div id="'+id+'">S !</div>');
-        },3000);  
-      }
-      //the player dont have enough resources
-      else {
-        alert('not enough $$$ !');
-      }
-    });*/
-
     $('#sonde-creation').bind('click',function(){
       //sondeM.trigger('sonde:create');
       if (GAME.resourceStackModel.subtract(VALUES['sonde'])) {
@@ -159,6 +132,20 @@
     });
     //-------- /TESTS
 
+  //---------- Displaying starting dome
+  var playerName = $('#player-name').text().trim();
+  if (playerName === 'player1') {
+    debug('revealing player1 starting dome');
+    GAME.gridView.displayStartingDome('player1');
+  }
+  else if (playerName === 'player2') {
+    debug('current player is player2');
+    GAME.gridView.displayStartingDome('player2');
+  }
+  else {
+    debug('welcome spectator !');
+  }
+
    });
 
     
@@ -171,7 +158,7 @@
     <div class="span3">
       <h1>S Q U A R E D W A R S</h1>
     </div>
-    <div class="span3">
+    <div id="player-name" class="span3">
       {{player}}
     </div>
     <div class="span5 offset1">
@@ -188,46 +175,38 @@
     <div id="grid-area" class="span9"></div>
   </div>
 
-  <!-- ANCIENNE SECTION ITEMS-->
-  <!--
+  <!-- ITEMS CREATION SECTION -->
   <div class="row-fluid">
-    <div id="stack-build" class="span1">
-      <h2>BUILD</h2>
-      <a href="#" id="sonde-creation"><div>S (3)</div></a>
-      <div>D (5)</div>
-      <div>M (3)</div>
-    </div>
-    <div id="stack-wip" class="span1">
-      <h2>WIP</h2>
-    </div>
-    <div id="stack-use" class="span1">
-      <h2>USE</h2>
-      <div id="sondes-area"></div>
-    </div>
-  </div>
-  -->
 
-  <!-- NOUVELLE SECTION ITEMS-->
-  <div class="row-fluid">
-    <div id="sondes" class="container">
+    <div id="sondes" class="container span3 offset1">
       <a href="#" id="sonde-creation">+</a>
       <div id="sondes-area">
         <!-- ETAT INITIAL DE LA VUE -->
         <div class="item active">S</div>
         <div class="counter">0</div>
       </div>
+    </div>
+
+    <div id="domes" class="container span3 offset1">
+      <a href="#" id="dome-creation">+</a>
+      <div id="domes-area">
+        <!-- ETAT INITIAL DE LA VUE -->
+        <div class="item">D</div>
+        <div class="counter">0</div>
+      </div>
+
       
     </div>
-    <div class="container">
-      <div class="item">D</div>
+
+    <div id="missiles" class="container span3 offset1">
+      <a href="#" id="missile-creation">+</a>
+      <div id="missiles-area">
+        <!-- ETAT INITIAL DE LA VUE -->
+        <div class="item">M</div>
+        <div class="counter">0</div>
     </div>
-    <div class="container">
-      <div class="item">M</div>
-    </div>
+
   </div>
-
-
- 
  
 </body>
 <!-- TEMPLATES -->

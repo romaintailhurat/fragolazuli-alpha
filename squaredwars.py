@@ -137,14 +137,17 @@ class SWGameHandler(webapp2.RequestHandler):
         message ="game_id : %s has status : %s" % (gameId, game.state)
 
         currentPlayer = ''
+
         if game.players['player1'] == '' :
             currentPlayer = 'player1'
             game.players['player1'] = 'player1'
+
         elif game.players['player2'] == '' :
             currentPlayer = 'player2'
-            game.players['player1'] = 'player2'
+            game.players['player2'] = 'player2'
+
         else :
-            currentPlayer = 'spectator'
+            currentPlayer = 'observer' #TODO the spectator might be able to see the entire map ala SC2
 
         #channel creation
         token = channel.create_channel(currentPlayer)

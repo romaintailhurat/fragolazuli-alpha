@@ -17,6 +17,7 @@
 import webapp2
 import jinja2
 import os
+import logging
 
 from squaredwars import SWMainHandler, SWGameHandler, SWGameCreation
 
@@ -35,5 +36,7 @@ handlers = [('/', MainHandler),
 			('/squaredwars/',SWMainHandler),
 			('/squaredwars/play',SWGameHandler),
 			('/squaredwars/create',SWGameCreation)]
+
+logging.getLogger().setLevel(logging.DEBUG)
 
 app = webapp2.WSGIApplication(handlers, debug=True)

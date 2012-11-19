@@ -2,12 +2,15 @@ import webapp2
 import jinja2
 import os
 import json
+import logging
 
 from google.appengine.api import channel
 
 from google.appengine.ext import db
 
 from random import randint
+
+import pickle
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -37,13 +40,38 @@ TYPES_FREQ = {'T': 0,'R' : 0}
 
 #------ models
 
+#See http://stackoverflow.com/questions/2028355/datastore-list-of-lists
+class GridProperty(db.Property):
+
+    data_type = list
+
+    def get_value_for_datastore(self, model_instance):
+        return db.Blob(pickle.dumps(getattr(model_instance,self.name)))
+
+    def make_value_from_datastore(self, value):
+        return pickle.loads(value)
+
+    def validate(self, value):
+        return value
+
+    def empty(self, value):
+        return not value
+
 class Game(db.Model):
-    state = 'created'
-    grid = []
-    players = {
-        'player1' : '',
-        'player2' : ''
-    }
+    state = db.StringProperty()
+    grid = GridProperty()
+    player1 = db.StringProperty()
+    player2 = db.StringProperty()
+
+    """
+    MUST BE CALLED BEFORE USING THE OTHER METHODS
+    """
+    def init(self):
+        self.state = ''
+        self.grid = []
+        self.player1 = ''
+        self.player2  = ''
+
 
     """
     Generate the grid map for the game. We start by choosing a type of
@@ -84,14 +112,14 @@ class Game(db.Model):
     def generatePlayersStartingDomePositions(self, resourceTilesLocation):
         #add players starting domes
         #for player1
-        randomPosition1 = randint(0, len(resourceTilesLocation))
+        randomPosition1 = randint(0, len(resourceTilesLocation) - 1)
         randomPosition2 = randomPosition1
         player1StartingDomeLocation = resourceTilesLocation[randomPosition1]
         player2StartingDomeLocation = ''
 
         #and then for player2
         while (randomPosition2 == randomPosition1) : 
-            randomPosition2 = randint(0, len(resourceTilesLocation))
+            randomPosition2 = randint(0, len(resourceTilesLocation) - 1)
             player2StartingDomeLocation = resourceTilesLocation[randomPosition2]
 
         return {'P1' : player1StartingDomeLocation, 'P2' : player2StartingDomeLocation}
@@ -138,13 +166,15 @@ class SWGameHandler(webapp2.RequestHandler):
 
         currentPlayer = ''
 
-        if game.players['player1'] == '' :
+        if game.player1 == '' :
             currentPlayer = 'player1'
-            game.players['player1'] = 'player1'
+            game.player1 = 'player1'
+            game.put()
 
-        elif game.players['player2'] == '' :
+        elif game.player2 == '' :
             currentPlayer = 'player2'
-            game.players['player2'] = 'player2'
+            game.player2 = 'player2'
+            game.put()
 
         else :
             currentPlayer = 'observer' #TODO the spectator might be able to see the entire map ala SC2
@@ -170,7 +200,9 @@ class SWGameHandler(webapp2.RequestHandler):
 class SWGameCreation(webapp2.RequestHandler):
     def post(self):
         game = Game()
+        game.init()
         game.generateGrid(10, 20)
+        game.state = 'created'
         game.put()
         gameId = game.key()
         #self.response.content_type = 'application/json'

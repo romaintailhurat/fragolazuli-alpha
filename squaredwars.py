@@ -177,7 +177,7 @@ class SWGameHandler(webapp2.RequestHandler):
             game.put()
 
         else :
-            currentPlayer = 'observer' #TODO the spectator might be able to see the entire map ala SC2
+            currentPlayer = 'observer' #TODO the spectator should be able to see the entire map ala SC2
 
         #channel creation
         token = channel.create_channel(currentPlayer)
@@ -193,7 +193,20 @@ class SWGameHandler(webapp2.RequestHandler):
         )
 
     def post(self):
-        pass
+        # TODO
+        # use a JSON message
+        # add parameters : game_id, data
+        # return a JSON string
+        sender = self.request.get('player')
+
+        logging.debug('The value of the parameter player is %s' %sender )
+
+        if sender == 'player1' :
+            channel.send_message('player2','ping from %s' %sender)
+        elif sender == 'player2' :
+            channel.send_message('player1','ping from %s' %sender)
+
+        self.response.out.write('message sent to the other player') 
 
 #----------- GAME Creation Handler
 

@@ -33,9 +33,16 @@ GAME.clock = 0;
 //tick every second
 createjs.Ticker.setInterval(1000);
 
+// the clock listener
 createjs.Ticker.addListener(function() {
   GAME.clock += 1;
   $('#clock').html(GAME.clock + "secs");
+});
+
+// the dome listener, in charge for loading the resource stack
+createjs.Ticker.addListener(function() {
+  var resourcesPerTick = GAME.domes.length;
+  GAME.resourceStackModel.add(resourcesPerTick);
 });
 
   //------------//
@@ -51,6 +58,12 @@ var GridModel = Backbone.Model.extend({});
 var SondeModel = Backbone.Model.extend({
   defaults : {
     'value' : VALUES['sonde']
+  }
+});
+
+var DomeModel = Backbone.Model.extend({
+  defaults : {
+    'value' : VALUES['dome']
   }
 });
 
@@ -71,7 +84,7 @@ var ResourceStackModel = Backbone.Model.extend({
     this.set('stack',currentStack + quant);
     //associated view will (must) be updated 'change' is triggered
     this.trigger('change'); 
-    if (this.get('stack') >= 30) {
+    if (this.get('stack') >= 100) {
       alert('GAME OVER - YOU WIN');
     }
   },
@@ -105,6 +118,11 @@ var ResourceStackModel = Backbone.Model.extend({
  //----- Sondes of the player
  var SondesCollection =  Backbone.Collection.extend({
   model : SondeModel
+ });
+
+ //----- A player's dome
+ var DomesCollection = Backbone.Collection.extend({
+  model : DomeModel
  });
 
 
@@ -225,6 +243,8 @@ function displayGrid(elId, grid) {
  // GAME LOOP  //
 //------------//
 
+
+// TODO implements stopping condition
 GAME.start = function() {
   debug('Game has started !');
   GAME.state = 'started';

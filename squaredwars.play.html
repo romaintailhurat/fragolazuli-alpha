@@ -37,11 +37,10 @@
 
     //--------------- Send function
 
-    function send(message) {
-      console.log('sending message as JSON');
-      var xhr = new XMLHttpRequest(),
-        jsonMessage = {'message' : message};
-      xhr.open('POST', '/squaredwars?m=' + JSON.stringify(jsonMessage), true);
+    function send(sender) {
+      console.log(sender + 'is sending a message to the other player');
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/squaredwars/play?player='+ sender, true);
       xhr.send();
     };
 
@@ -60,12 +59,12 @@
     socket.onclose = onClose;
 
     //-------- Instanciation models
+
     GAME.gridModel = new GridModel({
       'grid': {{grid}}
     });
 
     GAME.resourceStackModel = new ResourceStackModel();
-  
 
     //-------- Intanciation views
 
@@ -92,7 +91,12 @@
       var numberOfSondes= this.length;
       debug('adding a sonde to collection trigger the rendering of the sonde view');
       GAME.sondesView.render(numberOfSondes);
- });
+    });
+
+    GAME.domes = new DomesCollection();
+
+    // adding the starting dome for each player
+    GAME.domes.add(new DomeModel()); 
 
     //-------- EVENTING
 
@@ -213,7 +217,7 @@
 <!-- TODO : could be externalize, see A. Osmani MVC :
 http://bit.ly/RdIW2R -->
 <script id="template-resource" type="text/html">
-  <div><%= stack %>/30</div>
+  <div><%= stack %>/100</div>
 </script>
 
 <script id="template-sondes" type="text/html">

@@ -23,8 +23,7 @@
 
     function onMessage(m) {
       console.log('onmessage : ' + m.data);
-      var previous = $('#res').html();
-      $('#res').html(previous + 'Message reçu : ' + m.data);
+      $('#message-area').html('Message reçu : ' + m.data);
     };
 
     function onError(e) {
@@ -37,10 +36,10 @@
 
     //--------------- Send function
 
-    function send(sender) {
+    function send(sender, action) {
       console.log(sender + 'is sending a message to the other player');
       var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/squaredwars/play?player='+ sender, true);
+      xhr.open('POST', '/squaredwars/play?player='+ sender + '&action=' + action, true);
       xhr.send();
     };
 
@@ -48,6 +47,9 @@
 
     //-------- START ??
     GAME.start();
+
+    // current player is
+    var currentPlayer = $('#player-name').text().trim();
 
     //-------- Connection
     //le token est celui créé pour le client côté serveur
@@ -109,13 +111,15 @@
 
     $('#sonde-creation').bind('click',function(){
       //sondeM.trigger('sonde:create');
-      if (GAME.resourceStackModel.subtract(VALUES['sonde'])) {
+      if (GAME.resourceStackModel.subtract(GAME.VALUES['sonde'])) {
         var randomId = Math.floor(Math.random()*1000000); //random numeric ID
         var sonde = new SondeModel({
           id:randomId
         });
-
         GAME.sondes.add(sonde); //on 'add', trigger sondesview render function
+        // -GD- sending warning to the other player everytime we make a move
+        // like creating a sonde ?
+        send(currentPlayer, 'creating-a-sonde');
       }
       else {
        alert('not enough $$$ !'); 
@@ -147,7 +151,7 @@
     GAME.gridView.displayStartingDome('player2');
   }
   else {
-    debug('welcome spectator !');
+    debug('welcome observer !');
   }
 
    });
@@ -160,12 +164,12 @@
 
   <header class="row-fluid">
     <div class="span3">
-      <h1>S Q U A R E D W A R S</h1>
+      <h1><a href="/squaredwars">W&#178;</a></h1>
     </div>
     <div id="player-name" class="span3">
       {{player}}
     </div>
-    <div class="span5 offset1">
+    <div id="message-area" class="span5 offset1">
       {{message}}
     </div>
   </header>
@@ -217,7 +221,7 @@
 <!-- TODO : could be externalize, see A. Osmani MVC :
 http://bit.ly/RdIW2R -->
 <script id="template-resource" type="text/html">
-  <div><%= stack %>/100</div>
+  <div><%= stack %>/<%= winningLimit %></div>
 </script>
 
 <script id="template-sondes" type="text/html">

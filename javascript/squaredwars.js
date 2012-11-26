@@ -2,26 +2,29 @@
 // SQUAREDWARS MAIN JAVASCRIPT
 //---------------
 
+//-------------- GAME
+//----- Module contenant la partie en cours
+var GAME = {};
+
 //-------------- CONSTS
 
-var VALUES = {
+GAME.VALUES = {
     //resource costs
       'sonde' : 3,
       'dome' : 5,
       'missile' : 3,
-      'starting-stack' : 10
-    },
-    TIMINGS = {
+      'startingStack' : 10,
+      'winningLimit' : 1000
+    };
+
+GAME.TIMINGS = {
       //seconds to build complete
       'buildings' : {
         'sonde' : 3
       }
-    },
-    DEBUG = true;
+    };
 
-//-------------- GAME
-//----- Module contenant la partie en cours
-var GAME = {};
+GAME.DEBUG = true;
 
 GAME.state = 'created'; // /!\ already exists on the server #TODO synchronize ?
 
@@ -57,13 +60,13 @@ var GridModel = Backbone.Model.extend({});
 
 var SondeModel = Backbone.Model.extend({
   defaults : {
-    'value' : VALUES['sonde']
+    'value' : GAME.VALUES['sonde']
   }
 });
 
 var DomeModel = Backbone.Model.extend({
   defaults : {
-    'value' : VALUES['dome']
+    'value' : GAME.VALUES['dome']
   }
 });
 
@@ -75,7 +78,7 @@ Holds resources of the player
 var ResourceStackModel = Backbone.Model.extend({
   //player starts with x resources
   defaults : {
-    'stack' : VALUES['starting-stack']
+    'stack' : GAME.VALUES['startingStack']
   },
 
   add : function(quant) {
@@ -84,7 +87,7 @@ var ResourceStackModel = Backbone.Model.extend({
     this.set('stack',currentStack + quant);
     //associated view will (must) be updated 'change' is triggered
     this.trigger('change'); 
-    if (this.get('stack') >= 100) {
+    if (this.get('stack') >= GAME.VALUES['winningLimit']) {
       alert('GAME OVER - YOU WIN');
     }
   },
@@ -198,7 +201,8 @@ var ResourceStackView = Backbone.View.extend({
     debug('rendering resource stack view');
 
     var context = {
-          'stack' : this.model.get('stack')
+          'stack' : this.model.get('stack'),
+          'winningLimit' : GAME.VALUES['winningLimit']
         },
         //ideally, would be a view property ! but this.template won't work !  =(
         template = _.template($('#template-resource').html()),
@@ -212,7 +216,7 @@ var ResourceStackView = Backbone.View.extend({
 //-------------- UTILS
 
 function debug(message) {
-  if(DEBUG) {
+  if(GAME.DEBUG) {
     console.log("[DEBUG] " + message);
   }
 }
@@ -232,7 +236,8 @@ function displayGrid(elId, grid) {
         $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+'</div>');
       }
       else {
-        $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+'</div>');  
+        // a space is appended to the letter to get tiles of the same width
+        $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+' '+'</div>');  
       }
       
     });

@@ -198,13 +198,14 @@ class SWGameHandler(webapp2.RequestHandler):
         # add parameters : game_id, data
         # return a JSON string
         sender = self.request.get('player')
+        action = self.request.get('action')
 
         logging.debug('The value of the parameter player is %s' %sender )
 
         if sender == 'player1' :
-            channel.send_message('player2','ping from %s' %sender)
+            channel.send_message('player2', action)
         elif sender == 'player2' :
-            channel.send_message('player1','ping from %s' %sender)
+            channel.send_message('player1', action)
 
         self.response.out.write('message sent to the other player') 
 

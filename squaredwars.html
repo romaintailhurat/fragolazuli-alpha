@@ -13,82 +13,26 @@
  <script type="text/javascript" src="/javascript/lib/handlebars-1.0.rc.1.js"></script>
  <script type="text/javascript" src="/javascript/lib/easeljs-0.5.0.min.js"></script>
 
- <!-- MAIN -->
- <script type="text/javascript" src="/javascript/squaredwars.js"></script>
+ <!-- MAIN -->  
  <script type="text/javascript">
-
-    //----------------- channel handling
-    function onOpened() {
-      console.log('channel opened with token : {{token}}');
-    };
-
-    function onMessage(m) {
-      console.log('onmessage : ' + m.data);
-      var previous = $('#res').html();
-      $('#res').html(previous + 'Message reçu : ' + m.data);
-    };
-
-    function onError(e) {
-      console.log('onerror : ' + e);
-    };
-
-    function onClose(m) {
-      console.log('onclose : ' + m);
-    }
-
-    //--------------- Send function
-
-    function send(message) {
-      console.log('sending message as JSON');
-      var xhr = new XMLHttpRequest(),
-        jsonMessage = {'message' : message};
-      xhr.open('POST', '/squaredwars?m=' + JSON.stringify(jsonMessage), true);
-      xhr.send();
-    };
-
     
   $(document).ready(function(){
-
-    //-------- Connection
-    //le token est celui créé pour le client côté serveur
-    channel = new goog.appengine.Channel('{{token}}');
-    socket = channel.open();
-    socket.onopen = onOpened;
-    socket.onmessage = onMessage;
-    socket.onerror = onError;
-    socket.onclose = onClose;
-
-    //-------- Grid creation
     
-    $('#grid-generation').bind('click', function() {
-      var g = generateGrid(10,5);
-      displayGrid(g);  
-    });
-
-    //-------- Sending message
-
-    $('#trigger').bind('click', function() {
-      var messageToSend = $('#message').val();
-      send(messageToSend);
-    })
-
     //-------- POST : new game
 
     $('#create-game').bind('click', function() {
-      debug('ask for a new game using POST request');
+      console.log('ask for a new game using POST request');
       //Trouble with relative path !!! that behave differently in dev and prod
       var CREATION_URL = '/squaredwars/create';
 
       $.post(CREATION_URL, function(data) {
-        debug(data);
+        console.log(data);
         var link = '/squaredwars/play?game_id=' + $.parseJSON(data).gameId;
         $('#creation-message').html('Link to your game : <a href="' + link + '">' + link + '</a>');
       });
     });
-
   });
 
-    
  </script>
 
 </head>
@@ -106,9 +50,6 @@
       {% endfor %}
     </div>
   </div>
- 
 
-
- 
 </body>
 </html>

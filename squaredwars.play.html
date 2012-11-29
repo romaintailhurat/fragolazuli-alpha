@@ -18,28 +18,40 @@
 
     //----------------- channel handling
     function onOpened() {
-      console.log('channel opened with token : {{token}}');
+      debug('channel opened with token : {{token}}');
     };
 
     function onMessage(m) {
-      console.log('onmessage : ' + m.data);
-      $('#message-area').html('Message reçu : ' + m.data);
+      debug('onmessage : ' + m.data);
+      var action = JSON.parse(m.data);
+      if(action.action === "sonde") {
+        $('#message-area').html('The other player creates a sonde !');
+      }
+      else if (action.action === "dome") {}
+      else if (action.action === "missile") {}
     };
 
     function onError(e) {
-      console.log('onerror : ' + e);
+      debug('onerror : ' + e);
     };
 
     function onClose(m) {
-      console.log('onclose : ' + m);
+      debug('onclose : ' + m);
     }
 
     //--------------- Send function
-
+    /*
+    @param sender the player that is sending
+    @param action an object describing the action to perform
+      {"action" : "sonde"}
+      {"action" : "dome", "position" : [nm, from the id of the element]}
+      {"action" : "missile", "position" : [nm, from the id of the element]}
+    */
     function send(sender, action) {
-      console.log(sender + 'is sending a message to the other player');
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/squaredwars/play?player='+ sender + '&action=' + action, true);
+      debug(sender + 'is sending a message to the other player');
+      var xhr = new XMLHttpRequest(),
+        action = JSON.stringify(action);
+      xhr.open('POST', '/squaredwars/play?sender='+ sender + '&action=' + action, true);
       xhr.send();
     };
 
@@ -119,7 +131,7 @@
         GAME.sondes.add(sonde); //on 'add', trigger sondesview render function
         // -GD- sending warning to the other player everytime we make a move
         // like creating a sonde ?
-        send(currentPlayer, 'creating-a-sonde');
+        send(currentPlayer, {"action" : "sonde"});
       }
       else {
        alert('not enough $$$ !'); 

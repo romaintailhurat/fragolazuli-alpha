@@ -197,7 +197,7 @@ class SWGameHandler(webapp2.RequestHandler):
         # use a JSON message
         # add parameters : game_id, data
         # return a JSON string
-        sender = self.request.get('player')
+        sender = self.request.get('sender')
         action = self.request.get('action')
 
         logging.debug('The value of the parameter player is %s' %sender )

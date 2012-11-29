@@ -24,7 +24,7 @@ GAME.TIMINGS = {
       }
     };
 
-GAME.DEBUG = true;
+GAME.DEBUG = false;
 
 GAME.state = 'created'; // /!\ already exists on the server #TODO synchronize ?
 

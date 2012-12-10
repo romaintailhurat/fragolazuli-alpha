@@ -26,7 +26,13 @@ GAME.TIMINGS = {
 
 GAME.DEBUG = false;
 
+//-------------- GLOBAL VARS
+
 GAME.state = 'created'; // /!\ already exists on the server #TODO synchronize ?
+
+// Each time we click a cell in the grid, this global var tells what action
+// should be perform : donothing, setsonde, setdome, destroydome
+GAME.actionVerb = 'donothing';
 
 //game time in seconds
 GAME.clock = 0;
@@ -183,6 +189,11 @@ var SondesView = Backbone.View.extend({
         html = template(context);
 
     $(this.el).html(html);
+    // Rebind, because for every rendering, the binding disappear
+    $('#launcher-sonde').on('click', function() {
+      console.debug('actionVerb set to : setsonde');
+      GAME.actionVerb = "setsonde";
+    });
   }
 });
 
@@ -221,11 +232,18 @@ function debug(message) {
   }
 }
 
+GAME.displayMessage = function(message) {
+  $('#message-area').html(message);
+};
+
 /**
 @param elId id of the element in which the grid will be displayed
 @param grid the grid, as given by the server
 */
 function displayGrid(elId, grid) {
+
+  // First emptying div html, to avoid side-effect when re-rendering
+  $(elId).html("");
   
   //chaque ligne du grid
   _.map(grid, function(row, rowIndex) {

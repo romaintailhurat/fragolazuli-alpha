@@ -11,10 +11,19 @@
  <script type="text/javascript" src="/javascript/lib/backbone-min.js"></script>
  <script type="text/javascript" src="/javascript/lib/handlebars-1.0.rc.1.js"></script>
  <script type="text/javascript" src="/javascript/lib/easeljs-0.5.0.min.js"></script>
+ <script type="text/javascript" src="/javascript/lib/mousetrap.min.js"></script>
 
  <!-- MAIN -->
  <script type="text/javascript" src="/javascript/squaredwars.js"></script>
  <script type="text/javascript">
+
+    //----------------- KEYS HANDLING
+    Mousetrap.bind('s', function() {
+      GAME.displayMessage('sonde will be used');
+    });
+    Mousetrap.bind('shift+s', function() {
+      GAME.displayMessage('sonde creation');
+    });
 
     //----------------- channel handling
     function onOpened() {
@@ -25,10 +34,14 @@
       debug('onmessage : ' + m.data);
       var action = JSON.parse(m.data);
       if(action.action === "sonde") {
-        $('#message-area').html('The other player creates a sonde !');
+        GAME.displayMessage('sonde built by the other player');
       }
-      else if (action.action === "dome") {}
-      else if (action.action === "missile") {}
+      else if (action.action === "dome") {
+
+      }
+      else if (action.action === "missile") {
+
+      }
     };
 
     function onError(e) {
@@ -103,7 +116,7 @@
     //We're adding a sonde
     GAME.sondes.on('add remove', function() {
       var numberOfSondes= this.length;
-      debug('adding a sonde to collection trigger the rendering of the sonde view');
+      debug('adding/removing a sonde to collection trigger the rendering of the sonde view');
       GAME.sondesView.render(numberOfSondes);
     });
 
@@ -119,7 +132,7 @@
       GAME.resourceStackView.render();
     });
 
-    //-------- TESTS
+    //-------- ITEMS CREATION
 
     $('#sonde-creation').bind('click',function(){
       //sondeM.trigger('sonde:create');
@@ -134,23 +147,45 @@
         send(currentPlayer, {"action" : "sonde"});
       }
       else {
-       alert('not enough $$$ !'); 
+       GAME.displayMessage('not enough $$$ !'); 
       }
     });
 
-    //----- fog of war
+    //----- ACTIONS ON GRID DISPLAY
+    // /!\ Should be in GridView logic
+
     $('.g-cell').bind('click', function(e) {
       debug('g-cell clicked id: ' + e.target.id);
-      if(GAME.sondes.length > 0) {
-        var idOfFirst = GAME.sondes.first().id;
-        GAME.sondes.remove(idOfFirst);
-        $('#'+e.target.id).removeClass('hidden');
+
+      switch(GAME.actionVerb) {
+        case "donothing" : 
+          alert("doing nothing in " + e.target.id);
+          break;
+        case "setsonde" :
+          if(GAME.sondes.length > 0) {
+            var idOfFirst = GAME.sondes.first().id;
+            GAME.sondes.remove(idOfFirst);
+            $('#'+e.target.id).removeClass('hidden');
+            // back to normal state
+            GAME.actionVerb = "donothing";
+          } else {
+            GAME.displayMessage('Dont have any sonde !');
+            // back to normal state
+            GAME.actionVerb = "donothing";
+          }
+          break;
       }
-      else {
-        alert('Dont have any sonde !');
-      }
+      
     });
-    //-------- /TESTS
+
+  //----- ACTIONS ON ITEMS
+  // AIE ! Marche plus après un premier render ! Le bind se fait sur un élément
+  // et disparait avec l'élément ???
+  // --> solution : rebind lors du render !
+  $('#launcher-sonde').bind('click', function() {
+    console.debug('actionVerb set to : setsonde');
+    GAME.actionVerb = "setsonde";
+  });
 
   //---------- Displaying starting dome
   var playerName = $('#player-name').text().trim();
@@ -199,30 +234,28 @@
   <div class="row-fluid">
 
     <div id="sondes" class="container span3 offset1">
-      <a href="#" id="sonde-creation">+</a>
+      <button href="#" id="sonde-creation" class="btn btn-large btn-warning">+</button>
       <div id="sondes-area">
         <!-- ETAT INITIAL DE LA VUE -->
-        <div class="item active">S</div>
+        <button id="launcher-sonde" class="item btn btn-large btn-info">S</button>
         <div class="counter">0</div>
       </div>
     </div>
 
     <div id="domes" class="container span3 offset1">
-      <a href="#" id="dome-creation">+</a>
+      <button href="#" id="dome-creation" class="btn btn-large btn-warning">+</button>
       <div id="domes-area">
         <!-- ETAT INITIAL DE LA VUE -->
-        <div class="item">D</div>
+        <button class="item btn btn-large btn-info">D</button>
         <div class="counter">0</div>
       </div>
-
-      
     </div>
 
     <div id="missiles" class="container span3 offset1">
-      <a href="#" id="missile-creation">+</a>
+      <button href="#" id="missile-creation" class="btn btn-large btn-warning">+</button>
       <div id="missiles-area">
         <!-- ETAT INITIAL DE LA VUE -->
-        <div class="item">M</div>
+        <button class="item btn btn-large btn-info">M</button>
         <div class="counter">0</div>
     </div>
 
@@ -237,7 +270,7 @@ http://bit.ly/RdIW2R -->
 </script>
 
 <script id="template-sondes" type="text/html">
-  <div class="item active">S</div>
+  <button id="launcher-sonde" class="item btn btn-large btn-info">S</button>
   <div class="counter"><%= numberOfSondes %></div>
 </script>
 </html>

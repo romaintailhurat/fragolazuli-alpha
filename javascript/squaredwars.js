@@ -10,11 +10,11 @@ var GAME = {};
 
 GAME.VALUES = {
     //resource costs
-      'sonde' : 3,
-      'dome' : 5,
-      'missile' : 3,
+      'sonde' : 10,
+      'dome' : 30,
+      'missile' : 10,
       'startingStack' : 10,
-      'winningLimit' : 1000
+      'winningLimit' : 500
     };
 
 GAME.TIMINGS = {
@@ -23,6 +23,10 @@ GAME.TIMINGS = {
         'sonde' : 3
       }
     };
+
+GAME.MESSAGES = {
+  'not-enough-money' : 'You dont have enough money !'
+}
 
 GAME.DEBUG = false;
 
@@ -73,6 +77,12 @@ var SondeModel = Backbone.Model.extend({
 var DomeModel = Backbone.Model.extend({
   defaults : {
     'value' : GAME.VALUES['dome']
+  }
+});
+
+var MissileModel = Backbone.Model.extend({
+  defaults : {
+    'value' :  GAME.VALUES['missile']
   }
 });
 
@@ -129,9 +139,14 @@ var ResourceStackModel = Backbone.Model.extend({
   model : SondeModel
  });
 
- //----- A player's dome
+ //----- A player's domes
  var DomesCollection = Backbone.Collection.extend({
   model : DomeModel
+ });
+
+ //----- A player's missiles
+ var MissilesCollection = Backbone.Collection.extend({
+  model : MissileModel
  });
 
 
@@ -194,6 +209,48 @@ var SondesView = Backbone.View.extend({
       console.debug('actionVerb set to : setsonde');
       GAME.actionVerb = "setsonde";
     });
+  }
+});
+
+//----- DomeView
+var DomesView = Backbone.View.extend({
+
+  el : '#domes-area',
+
+  render : function(numberOfDomes) {
+    debug('rendering domes collection');
+
+    var context = {'numberOfDomes' : numberOfDomes},
+        template = _.template($('#template-domes').html()),
+        html = template(context);
+
+    $(this.el).html(html);
+    // Rebind
+    $('#launcher-dome').on('click', function(){
+      console.debug('actionVerb set to : setdome');
+      GAME.actionVerb = "setdome";
+    })
+  }
+});
+
+//----- MissileView
+var MissilesView = Backbone.View.extend({
+
+  el : '#domes-area',
+
+  render : function(numberOfMissiles) {
+    debug('rendering missiles collection');
+
+    var context = {'numberOfMissiles' : numberOfMissiles},
+        template = _.template($('#template-missiles').html()),
+        html = template(context);
+
+    $(this.el).html(html);
+    // Rebind
+    $('#launcher-missile').on('click', function(){
+      console.debug('actionVerb set to : setmissile');
+      GAME.actionVerb = "setmissile";
+    })
   }
 });
 

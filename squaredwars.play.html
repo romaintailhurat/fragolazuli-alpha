@@ -122,16 +122,24 @@
       GAME.sondesView.render(numberOfSondes);
     });
 
-    GAME.domes = new DomesCollection();
+    GAME.domesStack = new DomesStack();
+
+    GAME.domesStack.on('add remove', function() {
+      var numberOfStackedDomes = this.length;
+      GAME.domesView.render(numberOfStackedDomes);
+    });
+
+    GAME.domesSet = new DomesSet();
     // Adding a dome
-    GAME.domes.on('add remove', function() {
+    GAME.domesSet.on('add remove', function() {
       var numberOfDomes= this.length;
-      debug('adding/removing a dome to collection trigger the rendering of the dome view');
-      GAME.domesView.render(numberOfDomes);
+      debug('adding/removing a dome to domesSet trigger the rendering of the dome view');
+      // Non, ici il faudrait une vue pour les domes installés
+      //GAME.domesView.render(numberOfDomes);
     });
 
     // adding the starting dome for each player
-    GAME.domes.add(new DomeModel()); 
+    GAME.domesSet.add(new DomeModel()); 
 
     //-------- EVENTING
 
@@ -168,7 +176,7 @@
           id : randomId
         });
 
-        GAME.domes.add(dome);
+        GAME.domesStack.add(dome);
         send(currentPlayer, {"action" : "dome"})
       } else {
         GAME.displayMessage(GAME.MESSAGES['not-enough-money']);
@@ -201,6 +209,23 @@
           break;
         // installation d'un dome
         case "setdome" :
+          if(GAME.domesStack.length > 0) {
+            // si la case est révélée
+            var isHidden = $('#'+e.target.id).hasClass('hidden'),
+            // si la case est un R
+                isR = $('#'+e.target.id).text('R ');
+            
+            if (!isHidden && isR){
+              GAME.displayMessage('Dome being set in ' + e.target.id);
+              // TODO removing from domesStack, addind the same domeModel to domesSet
+              $('#'+e.target.id).text('D1'); // for player1
+            } else {
+              GAME.displayMessage('Cant put a dome here !');
+            }
+          } else {
+            GAME.displayMessage('Dont have any domes !');
+          }
+        
           break;
         // lancement d'un missile
         case "launch-missile" :

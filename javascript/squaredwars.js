@@ -10,9 +10,9 @@ var GAME = {};
 
 GAME.VALUES = {
     //resource costs
-      'sonde' : 10,
-      'dome' : 30,
-      'missile' : 10,
+      'sonde' : 1,
+      'dome' : 3,
+      'missile' : 1,
       'startingStack' : 10,
       'winningLimit' : 500
     };
@@ -54,7 +54,7 @@ createjs.Ticker.addListener(function() {
 
 // the dome listener, in charge for loading the resource stack
 createjs.Ticker.addListener(function() {
-  var resourcesPerTick = GAME.domes.length;
+  var resourcesPerTick = GAME.domesSet.length;
   GAME.resourceStackModel.add(resourcesPerTick);
 });
 
@@ -140,7 +140,12 @@ var ResourceStackModel = Backbone.Model.extend({
  });
 
  //----- A player's domes
- var DomesCollection = Backbone.Collection.extend({
+ // Ici, deux collections : les domes produits pas encore installés et les domes installés
+ var DomesStack = Backbone.Collection.extend({
+  model : DomeModel
+ });
+
+ var DomesSet = Backbone.Collection.extend({
   model : DomeModel
  });
 

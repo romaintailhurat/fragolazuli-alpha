@@ -22,15 +22,14 @@ body {
 .g-cell {
 	display : inline;
   padding: 1em;
-  /*margin: 0.1em;
-  border : 0.2em #FFF solid;*/
+  /*margin: 0.1em;*/
+  /*border : 0.2em #FFF solid;*/
 }
-
+/*
 .g-cell:hover {
   background-color:#EB352A;
   color: #EB352A;
-  /*border : 0.2em #F5AB7A solid;*/
-}
+}*/
 
 .hidden {
   background-color: #643E91;

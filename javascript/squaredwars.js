@@ -74,11 +74,16 @@ var SondeModel = Backbone.Model.extend({
   }
 });
 
+
+//--- Dome
+
 var DomeModel = Backbone.Model.extend({
   defaults : {
     'value' : GAME.VALUES['dome']
   }
 });
+
+//--- Missile
 
 var MissileModel = Backbone.Model.extend({
   defaults : {
@@ -241,7 +246,7 @@ var DomesView = Backbone.View.extend({
 //----- MissileView
 var MissilesView = Backbone.View.extend({
 
-  el : '#domes-area',
+  el : '#missiles-area',
 
   render : function(numberOfMissiles) {
     debug('rendering missiles collection');
@@ -253,8 +258,8 @@ var MissilesView = Backbone.View.extend({
     $(this.el).html(html);
     // Rebind
     $('#launcher-missile').on('click', function(){
-      console.debug('actionVerb set to : setmissile');
-      GAME.actionVerb = "setmissile";
+      console.debug('actionVerb set to : launchmissile');
+      GAME.actionVerb = "launchmissile";
     })
   }
 });

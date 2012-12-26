@@ -36,11 +36,20 @@
       if(action.action === "sonde") {
         GAME.displayMessage('sonde built by the other player');
       }
-      else if (action.action === "dome") {
+      else if (action.action === "setdome") {
+        if(GAME.currentPlayer === 'player1') {
+          // TODO mettre à jour le grid également
+          $('#'+action.position).html('D2'); 
+        } else {
+          $('#'+action.position).html('D1');
+        }
+        
 
       }
-      else if (action.action === "missile") {
-
+      else if (action.action === "destroydome") {
+        // cohérent avec ce qu'on fait en bas, un dome détruit
+        // devient un T
+        $('#'+action.position).text('T ');
       }
     };
 
@@ -57,8 +66,8 @@
     @param sender the player that is sending
     @param action an object describing the action to perform
       {"action" : "sonde"}
-      {"action" : "dome", "position" : [nm, from the id of the element]}
-      {"action" : "missile", "position" : [nm, from the id of the element]}
+      {"action" : "setdome", "position" : [nm, from the id of the element]}
+      {"action" : "destroydome", "position" : [nm, from the id of the element]}
     */
     function send(sender, action) {
       debug(sender + 'is sending a message to the other player');
@@ -74,7 +83,7 @@
     GAME.start();
 
     // current player is
-    var currentPlayer = $('#player-name').text().trim();
+    GAME.currentPlayer = $('#player-name').text().trim();  
 
     //-------- Connection
     //le token est celui créé pour le client côté serveur
@@ -141,6 +150,13 @@
     // adding the starting dome for each player
     GAME.domesSet.add(new DomeModel()); 
 
+    GAME.missiles =  new MissilesCollection();
+
+    GAME.missiles.on('add remove', function() {
+      var numberOfMissiles = this.length;
+      GAME.missilesView.render(numberOfMissiles);
+    });
+
     //-------- EVENTING
 
     //when the model change, the view is updated
@@ -162,7 +178,7 @@
         GAME.sondes.add(sonde); //on 'add', trigger sondesview render function
         // -GD- sending warning to the other player everytime we make a move
         // like creating a sonde ?
-        send(currentPlayer, {"action" : "sonde"});
+        send(GAME.currentPlayer, {"action" : "sonde"});
       } else {
        GAME.displayMessage(GAME.MESSAGES['not-enough-money']); 
       }
@@ -177,13 +193,24 @@
         });
 
         GAME.domesStack.add(dome);
-        send(currentPlayer, {"action" : "dome"})
       } else {
         GAME.displayMessage(GAME.MESSAGES['not-enough-money']);
       }
     })
 
     // Creation of a missile
+    $('#missile-creation').on('click', function(){
+      if(GAME.resourceStackModel.subtract(GAME.VALUES['missile'])) {
+        var randomId = Math.floor(Math.random()*1000000); //random numeric ID
+        var missile = new MissileModel({
+          id : randomId
+        });
+
+        GAME.missiles.add(missile);
+      } else {
+        GAME.displayMessage(GAME.MESSAGES['not-enough-money']);
+      }
+    })
 
     //----- ACTIONS ON GRID DISPLAY
     // /!\ Should be in GridView logic
@@ -193,7 +220,7 @@
 
       switch(GAME.actionVerb) {
         case "donothing" : 
-          alert("doing nothing in " + e.target.id);
+          GAME.displayMessage("doing nothing in " + e.target.id);
           break;
         // installation d'une sonde du stack
         case "setsonde" :
@@ -205,7 +232,7 @@
             GAME.displayMessage('Dont have any sonde !');
           }
             // back to normal state
-            GAME.actionVerb = "donothing";
+            // GAME.actionVerb = "donothing";
           break;
         // installation d'un dome
         case "setdome" :
@@ -213,12 +240,23 @@
             // si la case est révélée
             var isHidden = $('#'+e.target.id).hasClass('hidden'),
             // si la case est un R
-                isR = $('#'+e.target.id).text('R ');
+                isR = $('#'+e.target.id).text() === 'R ' ? true : false;
             
             if (!isHidden && isR){
               GAME.displayMessage('Dome being set in ' + e.target.id);
               // TODO removing from domesStack, addind the same domeModel to domesSet
-              $('#'+e.target.id).text('D1'); // for player1
+              var removedFromStack = GAME.domesStack.pop();
+              GAME.domesSet.add(removedFromStack);
+              if (GAME.currentPlayer === 'player1') {
+                $('#'+e.target.id).text('D1');  
+              } else {
+                $('#'+e.target.id).text('D2'); 
+              }
+              // Envoit à l'autre joueur
+              send(GAME.currentPlayer, {
+                "action" : "setdome",
+                "position" : e.target.id
+              });
             } else {
               GAME.displayMessage('Cant put a dome here !');
             }
@@ -228,7 +266,52 @@
         
           break;
         // lancement d'un missile
-        case "launch-missile" :
+        case "launchmissile" :
+          if(GAME.missiles.length > 0) {
+            // si la case est révélée
+            var isHidden = $('#'+e.target.id).hasClass('hidden'),
+                // si la case est un D
+                isD = $('#'+e.target.id).text() === 'D1' || $('#'+e.target.id).text() === 'D2' ? true : false,
+                // type de case
+                type = $('#'+e.target.id).text(),
+                // position
+                position = e.target.id;
+
+
+            if(!isHidden && isD) {
+              // Pour l'instant on détruit le dome qui devient un terrain T
+              $('#'+e.target.id).text('T ');
+
+              // player2
+              if (GAME.currentPlayer === 'player1') {
+                // ici type est D1 ou D2
+                if (type === "D1") {
+                  GAME.domesSet.pop();
+                } else {
+                  send(GAME.currentPlayer, {
+                    "action" : "destroydome",
+                    "position" : e.target.id
+                  });
+                }
+              // player2
+              } else {
+                // ici type est D1 ou D2
+                if (type === "D2") {
+                  GAME.domesSet.pop();
+                } else {
+                  send(GAME.currentPlayer, {
+                    "action" : "destroydome",
+                    "position" : e.target.id
+                  });
+                }
+              }
+
+            } else {
+              GAME.displayMessage('You cant launch a missile on that !');
+            }
+          } else {
+            GAME.displayMessage('Dont have any missiles !')
+          }
           break;
       }
       
@@ -249,8 +332,8 @@
   });
 
   $('#launcher-missile').on('click', function() {
-    GAME.displayMessage('actionVerb set to : setmissile');
-    GAME.actionVerb = "setmissile";
+    GAME.displayMessage('actionVerb set to : launchmissile');
+    GAME.actionVerb = "launchmissile";
   });
 
   //---------- Displaying starting dome
@@ -313,7 +396,7 @@
       <button href="#" id="dome-creation" class="btn btn-large btn-warning"> + </button>
       <div id="domes-area">
         <!-- ETAT INITIAL DE LA VUE -->
-        <button class="item btn btn-large btn-info">
+        <button id="launcher-dome" class="item btn btn-large btn-info">
           <i class="icon-map-marker icon-white"></i> DOME
         </button>
         <div class="counter">0</div>
@@ -324,7 +407,7 @@
       <button href="#" id="missile-creation" class="btn btn-large btn-warning"> + </button>
       <div id="missiles-area">
         <!-- ETAT INITIAL DE LA VUE -->
-        <button class="item btn btn-large btn-info">
+        <button id="launcher-missile" class="item btn btn-large btn-info">
           <i class="icon-screenshot icon-white"></i> MISSILE
         </button>
         <div class="counter">0</div>

@@ -30,7 +30,7 @@ TYPES = {
     'T' : 'T',
     'R' : 'R',
     }
-TYPES_WITH_WEIGHT = {'T':0.9,'R':0.2}
+TYPES_WITH_WEIGHT = {'T':0.6,'R':0.4}
 TYPES_FREQ = {'T': 0,'R' : 0}
 
 #------ functions

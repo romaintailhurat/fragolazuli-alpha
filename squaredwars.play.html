@@ -33,9 +33,11 @@
     function onMessage(m) {
       debug('onmessage : ' + m.data);
       var action = JSON.parse(m.data);
+      // l'autre joueur a créé une sonde
       if(action.action === "sonde") {
         GAME.displayMessage('sonde built by the other player');
       }
+      // l'autre joueur a posé un dome
       else if (action.action === "setdome") {
         if(GAME.currentPlayer === 'player1') {
           // TODO mettre à jour le grid également
@@ -43,13 +45,13 @@
         } else {
           $('#'+action.position).html('D1');
         }
-        
-
       }
+      // l'autre joueur a envoyé un missile
       else if (action.action === "destroydome") {
         // cohérent avec ce qu'on fait en bas, un dome détruit
         // devient un T
         $('#'+action.position).text('T ');
+        GAME.domesSet.pop();
       }
     };
 

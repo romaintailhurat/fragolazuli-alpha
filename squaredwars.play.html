@@ -53,6 +53,9 @@
         $('#'+action.position).text('T ');
         GAME.domesSet.pop();
       }
+      else if (action.action === "other-win") {
+        $('#grid-area').html('You lose, sucker !');
+      }
     };
 
     function onError(e) {

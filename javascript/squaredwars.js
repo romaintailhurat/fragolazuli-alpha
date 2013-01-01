@@ -109,7 +109,8 @@ var ResourceStackModel = Backbone.Model.extend({
     //associated view will (must) be updated 'change' is triggered
     this.trigger('change'); 
     if (this.get('stack') >= GAME.VALUES['winningLimit']) {
-      alert('GAME OVER - YOU WIN');
+      $('#grid-area').html('<h1>You win, bad boy !</h1>');
+      send(GAME.currentPlayer, {"action" : "other-win"});
     }
   },
 

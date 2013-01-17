@@ -59,6 +59,7 @@ class GridProperty(db.Property):
 
 class Game(db.Model):
     state = db.StringProperty()
+    creationDate = db.DateTimeProperty(auto_now_add=True)
     grid = GridProperty()
     player1 = db.StringProperty()
     player2 = db.StringProperty()
@@ -147,6 +148,7 @@ class SWMainHandler(webapp2.RequestHandler):
     	token = channel.create_channel(CHAN_ID)
     	template = jinja_environment.get_template('squaredwars.html')
         query = Game.all()
+        query.order('-creationDate')
         res = query.fetch(10)
         self.response.out.write(template.render({'token' : token, 'res' : res}))
 

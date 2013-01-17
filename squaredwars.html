@@ -46,7 +46,7 @@
     </div>
     <div>
       {% for game in res %}
-      <div><a href="/squaredwars/play?game_id={{game.key()}}">{{ game.key() }}</a> <> {{ game.state }}</div>
+      <div><a href="/squaredwars/play?game_id={{game.key()}}">{{ game.key() }}</a> <> {{ game.state }} <> {{ game.creationDate }}</div>
       {% endfor %}
     </div>
   </div>

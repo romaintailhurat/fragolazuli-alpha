@@ -32,7 +32,9 @@
 
     function onMessage(m) {
       debug('onmessage : ' + m.data);
+
       var action = JSON.parse(m.data);
+
       // l'autre joueur a créé une sonde
       if(action.action === "sonde") {
         GAME.displayMessage('sonde built by the other player');
@@ -53,6 +55,39 @@
         $('#'+action.position).text('T ');
         GAME.domesSet.pop();
       }
+
+      // score actuel de l'adversaire
+      else if (action.action === "progress") {
+        debug('receiving progress from opponent ' + action.score);
+
+        var progressBar = $('#opponent-progress-bar'),
+            // la progression se fait par tranche de 20%
+            fifth = GAME.VALUES.winningLimit / 5,
+            lessThanTwenty = action.score < fifth,
+            lessThanForty = action.score > fifth && action.score < fifth * 2,
+            lessThanSixty = action.score > fifth * 2 && action.score < fifth * 3,
+            lessThanEighty = action.score > fifth * 3 && action.score < fifth * 4,
+            lessThanHundred = action.score > fifth * 4 && action.score < fifth * 5;
+
+        if (lessThanTwenty) {
+          progressBar.attr('style', 'width : 0%;');
+        }
+        else if (lessThanForty) {
+          progressBar.attr('style', 'width : 20%;');
+        }
+        else if (lessThanSixty) {
+          progressBar.attr('style', 'width : 40%;');
+        }
+        else if (lessThanEighty) {
+          progressBar.attr('style', 'width : 60%;');
+        }
+        else if (lessThanHundred) {
+          progressBar.attr('class', 'bar bar-warning');
+          progressBar.attr('style', 'width : 80%;');
+        }
+      }
+
+      // l'autre joueur a atteint la score max
       else if (action.action === "other-win") {
         $('#grid-area').html('You lose, sucker !');
       }
@@ -341,7 +376,7 @@
     GAME.actionVerb = "launchmissile";
   });
 
-  //---------- Displaying starting dome
+  //---------- DISPLAYING STARTING DOME FOR EACH PLAYER
   var playerName = $('#player-name').text().trim();
   if (playerName === 'player1') {
     debug('revealing player1 starting dome');
@@ -377,6 +412,11 @@
   <div class="row-fluid">
     <div id="clock" class="span3"></div>
     <div id="resource-area" class="span6 offset3"></div>
+  </div>
+
+  <!-- OPPONENT PROGRESS -->
+  <div id="opponent-progress" class="progress">
+    <div id="opponent-progress-bar" class="bar" style="width: 0%;"></div>
   </div>
 
   <div class="row-fluid">

@@ -14,7 +14,7 @@ GAME.VALUES = {
       'dome' : 3,
       'missile' : 1,
       'startingStack' : 10,
-      'winningLimit' : 500
+      'winningLimit' : 100
     };
 
 GAME.TIMINGS = {
@@ -28,7 +28,7 @@ GAME.MESSAGES = {
   'not-enough-money' : 'You dont have enough money !'
 }
 
-GAME.DEBUG = false;
+GAME.DEBUG = true;
 
 //-------------- GLOBAL VARS
 
@@ -56,6 +56,17 @@ createjs.Ticker.addListener(function() {
 createjs.Ticker.addListener(function() {
   var resourcesPerTick = GAME.domesSet.length;
   GAME.resourceStackModel.add(resourcesPerTick);
+});
+
+// Players progress is sent to the opponent
+createjs.Ticker.addListener(function() {
+  debug('sending progress to opponent : ' + GAME.resourceStackModel.get('stack'));
+
+  send(GAME.currentPlayer, {
+    "action" :  "progress",
+    "score" : GAME.resourceStackModel.get('stack')
+  });
+
 });
 
   //------------//
@@ -189,7 +200,7 @@ var GridView = Backbone.View.extend({
     for (var i in grid) { 
       for (var j in grid[i]) {
         var cell = grid[i][j],
-            index = i.toString()+j.toString();
+            index = i.toString()+'-'+j.toString();
         if (cell === cellValue) {
           debug('index : ' + index);
           $('#'+index).removeClass('hidden');
@@ -319,11 +330,11 @@ function displayGrid(elId, grid) {
     //every cell of the current row
     _.map(row, function(cell, cellIndex) {
       if(cell === 'D1' || cell === 'D2') {
-        $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+'</div>');
+        $('#'+rowIndex).append('<div id="'+rowIndex+'-'+cellIndex+'" class="cube g-cell hidden">'+cell+'</div>');
       }
       else {
         // a space is appended to the letter to get tiles of the same width
-        $('#'+rowIndex).append('<div id="'+rowIndex+cellIndex+'" class="cube g-cell hidden">'+cell+' '+'</div>');  
+        $('#'+rowIndex).append('<div id="'+rowIndex+'-'+cellIndex+'" class="cube g-cell hidden">'+cell+' '+'</div>');  
       }
       
     });

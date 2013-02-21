@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="rpg.css">
+		<!-- QUINTUS à remplacer par la version de prod en prod (.min.js)?-->
+		<script type="text/javascript"
+				src="http://cdn.html5quintus.com/v0.0.4/quintus-all.js"></script>
+		
+	</head>
+	<body>
+		<header>R P G, a game with the Hero <img src="images/hero.png"></header>
+		<section id="game-container">
+			<canvas id="game"></canvas>
+		</section>
+		<footer></footer>
+		<script type="text/javascript">
+		
+		var Q = Quintus()
+					.include('Sprites, Scenes, 2D, Input')
+					.setup('game')
+					.controls();
+		
+		Q.Sprite.extend('Hero', {
+			
+			init : function(p) {
+				
+				this._super({
+					asset: 'hero.png',
+					x:20,
+					y:20
+				});
+
+				this.add('2d');
+				
+			}
+		});
+
+		Q.scene('level1', function(stage) {
+			
+			//stage.collisionLayer(new Q.TileLayer({}));
+
+			var hero = stage.insert(new Q.Hero());
+			stage.add('viewport').follow(hero);
+		});
+
+		// Chargement des assets
+		Q.load('hero.png', function() {
+			/*
+			var hero = new Q.Hero();
+
+			Q.gameLoop(function(dt) {
+				Q.clear();
+				hero.render(Q.ctx);
+			});
+			*/
+
+			Q.stageScene('level1');
+		});
+
+		</script>
+	</body>
+</html>

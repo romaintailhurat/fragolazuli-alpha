@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<script type="text/javascript" src="scripts/playcraft-0.5.6.min.js"></script>
+<script type="text/javascript">
+	
+	// 
+	// CODE PRINCIPAL
+	//
+
+	/*********
+	Equilibrage !??!!?!?!
+	********/
+
+	// FIXME idéalement, sera chargé à partir d'un JSON de config ?
+	var TWEAKS = {
+		"US" : {
+			machinesCount : 100
+		},
+		"China" : {
+			machinesCount : 200
+		}
+	};
+
+	/**********
+	Modèles
+	**********/
+
+	var SubNet = pc.Base.extend('SubNet',
+	 {},
+	 {
+	 	// Propriétés
+
+	 	machinesCount : 0,
+
+	 	// Méthodes
+
+	 	init : function(machinesCount) {
+	 		this.machinesCount = machinesCount;
+	 	}
+
+	 });
+
+	/**********
+	Instances
+	**********/
+	var US = new SubNet(TWEAKS.US.machinesCount),
+		China = new SubNet(TWEAKS.China.machinesCount);
+
+</script>
+</head>
+
+<body>
+<h1>Test playcraft</h1>
+<h2 id="test-pc"></h2>
+</body>
+
+</html>

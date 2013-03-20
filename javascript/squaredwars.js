@@ -10,10 +10,10 @@ var GAME = {};
 
 GAME.VALUES = {
     //resource costs
-      'sonde' : 1,
-      'dome' : 3,
-      'missile' : 1,
-      'startingStack' : 10,
+      'sonde' : 3,
+      'dome' : 10,
+      'missile' : 7,
+      'startingStack' : 20,
       'winningLimit' : 100
     };
 
@@ -28,7 +28,7 @@ GAME.MESSAGES = {
   'not-enough-money' : 'You dont have enough money !'
 }
 
-GAME.DEBUG = true;
+GAME.DEBUG = false;
 
 //-------------- GLOBAL VARS
 
@@ -221,7 +221,9 @@ var SondesView = Backbone.View.extend({
   render : function(numberOfSondes) {
     debug('rendering sondes collection');
     debug('numberOfSondes : ' + numberOfSondes);
-    var context = { 'numberOfSondes' : numberOfSondes },
+    var context = { 
+      'numberOfSondes' : numberOfSondes,
+      'cost': GAME.VALUES.sonde },
         template = _.template($('#template-sondes').html()),
         html = template(context);
 

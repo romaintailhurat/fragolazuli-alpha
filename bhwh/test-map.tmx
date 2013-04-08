@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="10" height="10" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" source="../../../../../Applications/Tiled Map Editor/examples/perspective_walls.tsx"/>
+ <tileset firstgid="17" name="test-tileset" tilewidth="32" tileheight="32">
+  <image source="PlanetCute PNG/Brown Block.png" width="101" height="171"/>
+ </tileset>
+ <tileset firstgid="32" source="../../../../../Applications/Tiled Map Editor/examples/desert.tsx"/>
+ <layer name="Calque de Tile 1" width="10" height="10">
+  <data encoding="base64" compression="zlib">
+   eJyzZWBgsIVieyQ2LgxSY0eEOmKxAhAromElLOo0gFgViNWgWB2ItdDU+EJpXSDWg2J9LOpsSVAHstcUiM2g2ByHOgMgNkTDRiSEgz+UBgA12xWm
+  </data>
+ </layer>
+</map>

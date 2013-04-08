@@ -3,58 +3,35 @@
 
 <head>
 
+<link rel="stylesheet" href="styles/bhwh.css" />
 <script type="text/javascript" src="scripts/playcraft-0.5.6.min.js"></script>
 <script type="text/javascript">
+
+var canvasJeu = 'bhwh-canvas',
 	
-	// 
-	// CODE PRINCIPAL
-	//
+	nomJeu = 'BHWH',
+	
+	cheminScripts = 'scripts/',
+	
+	// ATTENTION à l'ordre de chargement !
+	scriptsJeu = [
+	'tweaks.js',
+	'params.js',
+	'entity-layers.js', 
+	'systems.js',
+	'utils.js',
+	'bhwh.js'
+	]; 
 
-	/*********
-	Equilibrage !??!!?!?!
-	********/
-
-	// FIXME idéalement, sera chargé à partir d'un JSON de config ?
-	var TWEAKS = {
-		"US" : {
-			machinesCount : 100
-		},
-		"China" : {
-			machinesCount : 200
-		}
-	};
-
-	/**********
-	Modèles
-	**********/
-
-	var SubNet = pc.Base.extend('SubNet',
-	 {},
-	 {
-	 	// Propriétés
-
-	 	machinesCount : 0,
-
-	 	// Méthodes
-
-	 	init : function(machinesCount) {
-	 		this.machinesCount = machinesCount;
-	 	}
-
-	 });
-
-	/**********
-	Instances
-	**********/
-	var US = new SubNet(TWEAKS.US.machinesCount),
-		China = new SubNet(TWEAKS.China.machinesCount);
+// START
+pc.start(canvasJeu, nomJeu, cheminScripts, scriptsJeu);
 
 </script>
 </head>
 
 <body>
-<h1>Test playcraft</h1>
-<h2 id="test-pc"></h2>
+<canvas id="bhwh-canvas"></canvas>
+<canvas id="pcDebug"></canvas>
 </body>
 
 </html>

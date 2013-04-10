@@ -16,21 +16,44 @@ var GameScene = pc.Scene.extend('GameScene',
 
 			carteMondeLayer.name = "carteMondeLayer"; // BUG ???? le nom devrait découler du nom après l'extend
 
-			// Ajout des layers
-			this.addLayer(carteMondeLayer);
+			
 			var subnetEntitiesLayer = new SubnetEntitiesLayer();
 			subnetEntitiesLayer.name = "subnetEntitiesLayer";
+
+			// Ajout des layers
+			this.addLayer(carteMondeLayer);
 			this.addLayer(subnetEntitiesLayer);
 
 			// Création d'une entité de type Subnet
 			var US = pc.Entity.create(subnetEntitiesLayer);
 			// Ajout du composant définissant la position
-			US.addComponent(pc.components.Spatial.create({ x: 47, y: 205, w: 355 ,h: 210}));
+			US.addComponent( pc.components.Spatial.create({
+			 x: 47, y: 205, w: 355 ,h: 210
+			}) );
 			// Ajout composant Rectangle
-			US.addComponent(pc.components.Rect.create({ color: '#FFEEFF' }));
+			US.addComponent( pc.components.Rect.create({
+			 color: '#FFEEFF' 
+			}) );
+			// Composant input
+			US.addComponent( pc.components.Input.create({
+			states : 
+			 [
+			 	['menuCtx', ['MOUSE_BUTTON_LEFT_DOWN']],
+			 	['test', ['U']]
+			 ],
+			 actions : 
+			 [
+			 	['menuCtx', ['MOUSE_BUTTON_LEFT_DOWN']],
+			 	['test', ['U']]
+			 ] 
+			}) );
+
 			// Puis le système permettant le rendu
-			subnetEntitiesLayer.addSystem( new pc.systems.Render());
+			subnetEntitiesLayer.addSystem( new pc.systems.Render() );
+			// Le système gérant les inputs
+			subnetEntitiesLayer.addSystem( new InputSystem() );
 		},
+
 		process : function() {
 			this._super();
 		}
@@ -84,7 +107,7 @@ var BHWH = pc.Game.extend('BHWH',
 			console.log('Game, onLoaded');
 
 			// Binding inputs joueurs
-		    pc.device.input.bindAction(this, 'info', 'SPACE');
+		    pc.device.input.bindAction(this, 'info', 'I');
 
 			// Chargement des images dans le pool
 			addImageFromSourceToPool('menu', IMG_SRC.Menu);

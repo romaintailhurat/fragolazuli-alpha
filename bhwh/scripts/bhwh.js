@@ -52,6 +52,7 @@ var GameScene = pc.Scene.extend('GameScene',
 			subnetEntitiesLayer.addSystem( new pc.systems.Render() );
 			// Le système gérant les inputs
 			subnetEntitiesLayer.addSystem( new InputSystem() );
+			
 		},
 
 		process : function() {

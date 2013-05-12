@@ -1,0 +1,28 @@
+{
+	"carteMondeLayer" : {
+		"type" : "CarteMondeLayer"
+		},
+	"subnetEntitiesLayer" : {
+		"type" :  "SubnetEntitiesLayer",
+		"entities" : {
+			"US" : {
+				"type" : "Subnet",
+				"components" : {
+					"pc.components.Spatial" : { "x": 47, "y": 205, "w": 355 ,"h": 210},
+					"pc.components.Rect" : {"color" : "#FFEEFF"},
+					"pc.components.Input" : {
+					"states" : 
+					 [
+					 	["menuCtx", ["MOUSE_BUTTON_LEFT_DOWN"]],
+					 	["test", ["U"]]
+					 ],
+					"actions" : 
+					 [
+					 	["menuCtx", ["MOUSE_BUTTON_LEFT_DOWN"]],
+					 	["test", ["U"]]
+					 ] }
+				}
+			}
+		}
+	}
+}

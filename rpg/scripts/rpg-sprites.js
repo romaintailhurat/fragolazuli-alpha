@@ -6,6 +6,8 @@ RPG.initSprite = function () {
 	console.log(YuSpriteSheet + " loaded.");
 
 	Crafty.sprite(16, YuSpriteSheet, {
-		spriteBard : [9,0]
+		SpriteWall : [6,1],
+		SpriteBluePotion : [0,2],
+		SpriteBard : [0,4]
 	});
 };

@@ -23,6 +23,24 @@ RPG.boot =  {
         w : 16     
       });
 
+    // Doors
+    Crafty
+      .e('ClosedDoor')
+      .attr({
+        x : 120,
+        y : 120,
+        h : 16,
+        w : 16     
+      });
+    Crafty
+      .e('ClosedDoor')
+      .attr({
+        x : 56,
+        y : 12,
+        h : 16,
+        w : 16     
+      });
+
     Crafty
       .e('BluePotion')
       .attr({

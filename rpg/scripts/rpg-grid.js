@@ -2,12 +2,12 @@ var RPG = RPG || {};
 
 RPG.grid = {
 	// number of tiles on y
-	height : 16,
+	height : 20,
 	// number of tiles on x
-	width : 16,
+	width : 20,
 	tile : {
-		height : 16,
-		width : 16
+		height : 32,
+		width : 32
 	},
 
 	getGameHeight :  function() {

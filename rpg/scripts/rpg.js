@@ -19,8 +19,8 @@ RPG.boot =  {
       .attr({
         x : 128,
         y : 64,
-        h : 16,
-        w : 16     
+        h : RPG.grid.tile.height,
+        w : RPG.grid.tile.width     
       });
 
     // Doors
@@ -29,23 +29,25 @@ RPG.boot =  {
       .attr({
         x : 120,
         y : 120,
-        h : 16,
-        w : 16     
+        h : RPG.grid.tile.height,
+        w : RPG.grid.tile.width     
       });
     Crafty
       .e('ClosedDoor')
       .attr({
         x : 56,
         y : 12,
-        h : 16,
-        w : 16     
+        h : RPG.grid.tile.height,
+        w : RPG.grid.tile.width     
       });
 
     Crafty
       .e('BluePotion')
       .attr({
-        x : 16,
-        y : 16
+        x : 160,
+        y : 16,
+        h : RPG.grid.tile.height,
+        w : RPG.grid.tile.width
       });
     
     //Player entity
@@ -54,8 +56,8 @@ RPG.boot =  {
       .attr({
         x : 0,
         y : 0,
-        h : 16,
-        w : 16
+        h : RPG.grid.tile.height,
+        w : RPG.grid.tile.width
       })
       .multiway(4, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})
       .collision();

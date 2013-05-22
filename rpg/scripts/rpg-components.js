@@ -48,7 +48,10 @@ Crafty.c('Player', {
     this.requires('Actor, Fourway, SpriteBard, Collision')
         .onHit('Item', function(e) {
           RPG.tests.onHitCallbackArg = e;
-          $('#info').html('item found!');
+          if (e[0].obj.__c.BluePotion) {
+            $('#info').html('You find a blue potion !');  
+          } 
+          
         })
         .bind('Moved', function(from) {
 

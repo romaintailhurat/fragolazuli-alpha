@@ -15,6 +15,9 @@ handlers:
 - url: /javascript
   static_dir: javascript
 
+- url: /roarby
+  static_dir: roarby
+
 - url: /rpg
   static_dir: rpg
 

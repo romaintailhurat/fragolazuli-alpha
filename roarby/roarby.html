@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr" ng-app>
+
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<script src="dice.js"></script>
+<script src="roarby.js"></script>
+
+</head>
+
+<body>
+	
+	<h1>ROARBY</h1>
+	<h2>helpers</h2>
+
+	<div ng-controller="MainController">
+		<ul>
+			<li ng-repeat="animal in animaux">
+				{{ animal.nom }} the {{ animal.type }}
+				<ul>
+					<li ng-repeat="(nom, niveau) in animal.skills">{{ nom }} : {{ niveau }}</li>
+				</ul>
+			</li>
+		</ul>
+
+		<form ng-submit="passer()">
+
+		<h3>Passe</h3>
+		<select ng-model="passeur" ng-options="animal.nom for animal in animaux">
+			<option value=""></option>
+		</select>
+		<select ng-model="receveur" ng-options="animal.nom for animal in animaux">
+			<option value=""></option>			
+		</select>
+
+		<input type="submit" value="Passe!" />
+
+		</form>
+
+		<p >La passe est : {{resultatPasse}} </p>
+
+	</div>
+
+</body>
+
+</html>

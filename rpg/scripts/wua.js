@@ -1,32 +1,63 @@
 var WUA = {};
 
-WUA.mapSources = {
-	chapter1 : undefined
+// CONSTANTES
+
+WUA.constantes = {
+
+	SHIP : 'ship'
 };
+
+WUA.mapSources = {
+	ship : undefined
+};
+
+// ---------- KEYS
+
+Mousetrap.bind(['&','1'], function() {
+	Crafty.scene('ship');
+});
+
+Mousetrap.bind(['é','2'], function() {
+	Crafty.scene('shipMap');
+});
+
+Mousetrap.bind(['f','F'], function(e) {
+	// Chrome only #TODO faire la même chose pour FF
+	document.querySelector('body').webkitRequestFullScreen();
+});
+
 
 WUA.start = function () {
 	
 	// Game window
-	//Crafty.init(window.innerWidth - 20, window.innerHeight - 20);
-	Crafty.init(800, 600);
+	Crafty.init(window.innerWidth - 20, window.innerHeight - 20);
+	//Crafty.init(1200, 800);
 
 	Crafty.background('black');
 
-	// SPRITES
+	// ---------- SPRITES
 	Crafty.sprite(32, 'images/wua-sprites.png', {
 		AlexArmorSprite : [0,0],
 		AlexNakedSprite : [0,32]
 	});
 
+
 	// ---------- COMPONENTS
 
-	// Ales
+	// Alex, our hero
 	Crafty.c('Alex', {
 		init : function () {
-			this.requires('2D, Canvas, Multiway, SpriteAnimation, AlexArmorSprite');
+			this.requires('2D, Canvas, Collision, Multiway, SpriteAnimation, AlexArmorSprite');
 
 			this.bind('enterframe', function() {
 
+			});
+
+			// Gestion de la collision avec un Solid (ex : un mur)
+			this.bind('Moved', function(from) {
+				if( this.hit('Solid') ) {
+					this.attr({ x : from.x, y : from.y });
+				}
 			});
 		}
 	});
@@ -40,40 +71,44 @@ WUA.start = function () {
 	// ---------- SCENES
 
 	// Scene d'intro, on en profite par exemple pour charger la conf de la carte
-	// du chapitre 1
+	// du vaisseau
 	Crafty.scene('wua', function() {
 
 		$.getJSON('images/wua-decors-murs-tilemap.json', function(data) {
-			// l'objet correspondant à la carte du chapter1
-			WUA.mapSources.chapter1 = data;
+			// l'objet correspondant à la carte du ship
+			WUA.mapSources.ship = data;
 		});
 		
 		Crafty.e('HTML')
-			.attr({ x : 128, y : 128, w : 40, h : 400 })
+			.attr({ x : 128, y : 128, w : 400, h : 400 })
 			.append('<div id="intro-text" class="hero-text">Wake up, Alex</div>');
 
 		setTimeout(function() {
-			console.log('switching to chapter-1');
-			Crafty.scene('chapter1');
+			console.log('switching to ship scene');
+			Crafty.scene('ship');
 		}, 3000);
 
 	});
 
-	Crafty.scene('chapter1', function() {
+	Crafty.scene('ship', function() {
 
 		// CREATION CARTE
 		Crafty.e('2D, Canvas, TiledMapBuilder')
-			.setMapDataSource(WUA.mapSources.chapter1)
+			.setMapDataSource(WUA.mapSources.ship)
 			.createWorld( function (tiledmap) {
 
 				var numOfMurs = 0;
 
+				// Entités de type murs
 				_.each(tiledmap.getEntitiesInLayer('murs'), function(v, k, l) {
-					numOfMurs += 1;
-				});
 
-				console.log('il y a ' + numOfMurs + ' murs.');
+					// ajoute le composant de collision
+					v.addComponent('Solid');
+
+				});
 			});
+
+		// ---------- ENTITIES
 
 		// ALEX ENTITY
 		var Alex = 
@@ -92,6 +127,13 @@ WUA.start = function () {
 
 		// Camera on Alex
 		Crafty.viewport.follow(Alex, 0, 0);
+	});
+
+	// SHIP MAP
+	Crafty.scene('shipMap', function() {
+		Crafty.e('HTML')
+			.attr({ x : 0, y : 0, w : 400, h : 400 })
+			.append('<div id="intro-text" class="hero-text">this is the ship map.</div>');
 	});
 
 

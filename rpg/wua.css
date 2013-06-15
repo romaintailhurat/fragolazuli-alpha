@@ -1,6 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Nova+Square);
 
 .hero-text {
+	width : 400px;
 	color: white;
 	background-color: black;
 	font-family: 'Nova Square';

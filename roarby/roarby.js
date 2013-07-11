@@ -130,6 +130,6 @@ function MainController($scope) {
 
 	// COURSE
 	$scope.courir = function () {
-		$scope.resultatCourse = rollDice(2, 6) + $scope.coureur.skills.rapidite;
+		$scope.resultatCourse = rollDice(1, 6) + $scope.coureur.skills.rapidite;
 	}
 };

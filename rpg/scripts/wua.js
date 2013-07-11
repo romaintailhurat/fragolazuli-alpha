@@ -4,7 +4,13 @@ var WUA = {};
 
 WUA.constantes = {
 
-	SHIP : 'ship'
+	scenes : {
+		SHIP : 'ship',
+		SHIP_MAP : 'shipMap',
+		SYSTEM_MAP : 'systemMap',
+		GALACTIC_MAP: 'galacticMap',
+		PLANET : 'onAPlanet'
+	}
 };
 
 WUA.mapSources = {
@@ -14,11 +20,23 @@ WUA.mapSources = {
 // ---------- KEYS
 
 Mousetrap.bind(['&','1'], function() {
-	Crafty.scene('ship');
+	Crafty.scene(WUA.constantes.scenes.SHIP);
 });
 
 Mousetrap.bind(['é','2'], function() {
 	Crafty.scene('shipMap');
+});
+
+Mousetrap.bind(['"','3'], function() {
+	Crafty.scene('systemMap');
+});
+
+Mousetrap.bind(["'",'4'], function() {
+	Crafty.scene('galacticMap');
+});
+
+Mousetrap.bind(['(', '5'], function() {
+	Crafty.scene('onAPlanet');
 });
 
 Mousetrap.bind(['f','F'], function(e) {
@@ -90,7 +108,8 @@ WUA.start = function () {
 
 	});
 
-	Crafty.scene('ship', function() {
+	// SHIP VIEW
+	Crafty.scene(WUA.constantes.scenes.SHIP, function() {
 
 		// CREATION CARTE
 		Crafty.e('2D, Canvas, TiledMapBuilder')
@@ -130,6 +149,7 @@ WUA.start = function () {
 	});
 
 	// SHIP MAP
+	
 	Crafty.scene('shipMap', function() {
 		Crafty.e('HTML')
 			.attr({ x : 0, y : 0, w : 400, h : 400 })

@@ -98,24 +98,38 @@ function MainController($scope) {
 
 	$scope.resultatPasse = "";
 
+	// PASSE
 	$scope.passer = function() {
 		var numOfDices = 1,
 			numOfFaces = 6,
-			dice6Roll = rollDice(numOfDices, numOfFaces),
-			res = dice6Roll + $scope.passeur.skills.main;
+			dice6RollPasseur = rollDice(numOfDices, numOfFaces),
+			dice6RollReceveur,
+			jetPasseur = dice6RollPasseur + $scope.passeur.skills.main,
+			jetReceveur;
 
-		console.log('res : ' + res);
 
-		if (res < PASSE_RATEE) {
+		if (jetPasseur < PASSE_RATEE) {
 
-			$scope.resultatPasse = "RATEE !";
+			$scope.resultatPasse = "RATEE PASSEUR! [" + jetPasseur + "]";
 
-		} else if (PASSE_RATEE < res < PASSE_REUSSIE){
+		} else if (PASSE_RATEE < jetPasseur < PASSE_REUSSIE){
+			dice6RollReceveur = rollDice(numOfDices, numOfFaces);
+			jetReceveur = dice6RollReceveur + $scope.receveur.skills.main;
+
+			if (jetPasseur + jetReceveur > PASSE_REUSSIE) {
+				$scope.resultatPasse = "REUSSIE RECEVEUR ! [" + jetPasseur + " - " + jetReceveur + "]";	
+			} else {
+				$scope.resultatPasse = "RATEE RECEVEUR ! [" + jetPasseur + " - " + jetReceveur + "]";
+			}
 			
-			$scope.resultatPasse = "JET RECEVEUR !";
 
 		} else {
-			$scope.resultatPasse = "REUSSIE !"
+			$scope.resultatPasse = "REUSSIE PASSEUR! [" + jetPasseur + "]";
 		}
+	}
+
+	// COURSE
+	$scope.courir = function () {
+		$scope.resultatCourse = rollDice(2, 6) + $scope.coureur.skills.rapidite;
 	}
 };

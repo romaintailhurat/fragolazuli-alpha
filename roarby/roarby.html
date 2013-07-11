@@ -20,6 +20,43 @@
 	<h2>helpers</h2>
 
 	<div ng-controller="MainController">
+		
+		<!-- PASSE -->
+
+		<form ng-submit="passer()">
+
+			<h3>Passe</h3>
+			<select class="select-block span2" ng-model="passeur" ng-options="animal.nom for animal in animaux">
+				<option class="btn-primary" value=""></option>
+			</select>
+			<select class="select-block span2" ng-model="receveur" ng-options="animal.nom for animal in animaux">
+				<option value=""></option>			
+			</select>
+
+			<input class="btn btn-primary" type="submit" value="Passe!"/>
+
+		</form>
+
+
+		<p >La passe est : {{resultatPasse}} </p>
+
+		<!-- COURSE -->
+
+		<form ng-submit="courir()">
+			<h3>Course</h3>
+			<select class="select-block span2" ng-model="coureur" ng-options="animal.nom for animal in animaux">
+				<option class="btn-primary" value=""></option>
+			</select>
+
+			<input class="btn btn-primary" type="submit" value="Course!"/>
+
+		</form>
+
+		<p>{{ coureur.nom }} fait une course de {{ resultatCourse }}</p>
+
+
+		<br/>
+
 		<ul>
 			<li ng-repeat="animal in animaux">
 				{{ animal.nom }} the {{ animal.type }}
@@ -28,22 +65,6 @@
 				</ul>
 			</li>
 		</ul>
-
-		<form ng-submit="passer()">
-
-		<h3>Passe</h3>
-		<select class="select-block span2" ng-model="passeur" ng-options="animal.nom for animal in animaux">
-			<option class="btn-primary" value=""></option>
-		</select>
-		<select class="select-block span2" ng-model="receveur" ng-options="animal.nom for animal in animaux">
-			<option value=""></option>			
-		</select>
-
-		<input class="btn btn-primary" type="submit" value="Passe!"/>
-
-		</form>
-
-		<p >La passe est : {{resultatPasse}} </p>
 
 	</div>
 

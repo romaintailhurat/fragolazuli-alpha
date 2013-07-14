@@ -11,13 +11,21 @@
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 <!-- FLAT UI -->
 <link rel="stylesheet" type="text/css" href="flat-ui.css">
+<!-- Custom style -->
+<style type="text/css">
+	select {
+		width: 6em;
+		height : 3em;
+	}
+</style>
 
 </head>
 
 <body>
 	
 	<h1>ROARBY</h1>
-	<h2>helpers</h2>
+	<h5>jungle rugby</h5>
+	<h2>APP</h2>
 
 	<div ng-controller="MainController">
 		
@@ -54,18 +62,32 @@
 
 		<p>{{ coureur.nom }} fait une course de {{ resultatCourse }}</p>
 
+		<!-- PLAQUAGE -->
+		<form ng-submit="plaquer()">
+			<h3>Plaquage</h3>
+			<select class="select-block span2" ng-model="plaqueur" ng-options="animal.nom for animal in animaux">
+				<option class="btn-primary" value=""></option>
+			</select>
+			<select class="select-block span2" ng-model="plaque" ng-options="animal.nom for animal in animaux">
+				<option class="btn-primary" value=""></option>
+			</select>
+
+			<input class="btn btn-primary" type="submit" value="Plaquage!"/>
+		</form>
+
+		<p>{{ plaqueur.nom }} {{ resultatPlaquage }} sur {{ plaque.nom }} !</p>
+
 
 		<br/>
 
+
+		<!-- LISTE ANIMAUX -->
 		<ul>
 			<li ng-repeat="animal in animaux">
 				{{ animal.nom }} the {{ animal.type }}
-				<ul>
-					<li ng-repeat="(nom, niveau) in animal.skills">{{ nom }} : {{ niveau }}</li>
-				</ul>
+				[<span ng-repeat="(nom, niveau) in animal.skills">{{ nom }} : {{ niveau }} </span>]
 			</li>
 		</ul>
-
 	</div>
 
 </body>

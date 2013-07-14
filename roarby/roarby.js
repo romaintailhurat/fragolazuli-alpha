@@ -132,4 +132,16 @@ function MainController($scope) {
 	$scope.courir = function () {
 		$scope.resultatCourse = rollDice(1, 6) + $scope.coureur.skills.rapidite;
 	}
+
+	// PLAQUAGE
+	$scope.plaquer = function() {
+		var impactPlaqueur = rollDice(2,6) + $scope.plaqueur.skills.force,
+			resistancePlaque = rollDice(1,6) + $scope.plaque.skills.force;
+
+		if (impactPlaqueur > resistancePlaque) {
+			$scope.resultatPlaquage = "PLAQUAGE REUSSI!";
+		} else {
+			$scope.resultatPlaquage = "PLAQUAGE RATE!";
+		}
+	}
 };

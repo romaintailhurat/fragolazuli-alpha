@@ -15,11 +15,14 @@ handlers:
 - url: /javascript
   static_dir: javascript
 
-- url: /roarby
-  static_dir: roarby
+- url: /jungle-rugby
+  static_dir: jungle-rugby
 
 - url: /rpg
   static_dir: rpg
+
+- url: /simples
+  static_dir: simples
 
 - url: /bootstrap
   static_dir: bootstrap

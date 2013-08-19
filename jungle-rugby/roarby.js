@@ -93,6 +93,16 @@ function MainController($scope) {
 				'main' : 2,
 				'pied' : 6
 			}
+		},
+		{
+			'type' : 'Serpent',
+			'nom' : 'Boa',
+			'skills' : {
+				'force' : 7,
+				'rapidite' : 7,
+				'main' : 1,
+				'pied' : 1
+			}
 		}
 	];
 

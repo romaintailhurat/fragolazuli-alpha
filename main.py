@@ -20,6 +20,7 @@ import os
 import logging
 
 from squaredwars import SWMainHandler, SWGameHandler, SWGameCreation
+from crystalwars.cw import CWHandler, CWGameHandler
 
 #see https://developers.google.com/appengine/docs/python/gettingstartedpython27/templates
 jinja_environment = jinja2.Environment(
@@ -35,7 +36,10 @@ handlers = [('/', MainHandler),
 			('/squaredwars',SWMainHandler), #hmm, on doit pouvoir faire mieux =/
 			('/squaredwars/',SWMainHandler),
 			('/squaredwars/play',SWGameHandler),
-			('/squaredwars/create',SWGameCreation)]
+			('/squaredwars/create',SWGameCreation),
+
+			('/crystalwars',CWHandler),
+			('/crystalwars/game/(\d+)',CWGameHandler)]
 
 logging.getLogger().setLevel(logging.DEBUG)
 

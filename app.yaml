@@ -30,6 +30,9 @@ handlers:
 - url: /bhwh
   static_dir: bhwh
 
+- url: /crystalwars
+  static_dir: crystalwars
+
 - url: /.*
   script: main.app
 

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="http://craftyjs.com/release/0.5.3/crafty-min.js"></script>
+
+
+</head>
+<body></body>
+<script type="text/javascript">
+		/*
+		Crafty code for animation
+		*/
+
+		Crafty.init(320,320);
+		Crafty.background('#FFFFFF');
+
+		// SPRITES
+		Crafty.sprite(64, 'nexus.png', {
+			Nexus1 : [0, 0]
+		});
+
+		// ENTITY
+		var nexus = 
+		Crafty
+			.e('2D, Canvas, SpriteAnimation, Nexus1')
+			.attr( { x:32, y:32 } )
+			.animate('animation', 0, 0, 3)
+			.animate('animation', 50, -1);
+
+		
+
+	</script>
+</html>

@@ -39,6 +39,9 @@ handlers = [('/', MainHandler),
 			('/squaredwars/create',SWGameCreation),
 
 			('/crystalwars',CWHandler),
+			('/crystalwars/',CWHandler),
+			('/crystalwars/game',CWGameHandler),
+			('/crystalwars/game/',CWGameHandler),
 			('/crystalwars/game/(\d+)',CWGameHandler)]
 
 logging.getLogger().setLevel(logging.DEBUG)

@@ -3,13 +3,18 @@ __author__ = 'romaintailhurat'
 
 import webapp2
 import jinja2
+import os
 from logging import *
 
 import models
 
 getLogger('cw').setLevel(DEBUG)
 
-ROOT = '/crystalwars'
+
+# Setup env to retrieve templates
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
 
 class CWHandler(webapp2.RequestHandler):
     """
@@ -18,7 +23,8 @@ class CWHandler(webapp2.RequestHandler):
 
     def get(self):
         log(INFO, 'test de log')
-        self.response.out.write('welcome to crystalwars!')
+        template = jinja_environment.get_template('cw.html')
+        self.response.out.write(template.render({}))
 
 class CWGameHandler(webapp2.RequestHandler):
     """

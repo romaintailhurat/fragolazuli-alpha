@@ -40,11 +40,30 @@ class CWGameHandler(webapp2.RequestHandler):
         Display game each player
         """
         game = models.Game.get_by_id(int(gameId))
+        player = ''
+        token = ''
         template = jinja_environment.get_template('cw.game.html')
-        token = channel.create_channel(gameId)
+
+        if game.player1Here == False:
+            log(INFO, 'Player1 connection ; channel creation')
+            game.player1Here = True
+            game.put()
+            player = 'player1'
+            token = channel.create_channel(gameId + 'player1')
+        elif game.player2Here == False:
+            log(INFO, 'Player2 connection ; channel creation')
+            game.player2Here = True
+            game.put()
+            player = 'player2'
+            token = channel.create_channel(gameId + 'player2')
+        else:
+            log(ERROR, 'There are already two players !')
+            raise Exception()
+
         self.response.out.write(template.render({
             'id' : game.key().id(), # can't use gameId, makes it buggy
-            'token' : token
+            'token' : token,
+            'player' : player
             }))
 
     def post(self):
@@ -61,7 +80,19 @@ class CWGameHandler(webapp2.RequestHandler):
         """
         Game modification
         """
-        channel.send_message(gameId,'the game was modified')
+        sender = self.request.get('p')
+        log(INFO, 'PUT send by %s' %sender)
+        receiver = ''
+
+        # TODO : check if modification is ok ?
+
+        # Decide which player must receive an update ?
+        if(sender == 'player1'):
+            receiver = 'player2'
+        elif(sender == 'player2'):
+            receiver = 'player1'
+
+        channel.send_message(gameId + receiver,'the game was modified by the other player')
         self.response.out.write(json.dumps({'m' : 'PUT on a game'}))
 
     def delete(self, gameId):

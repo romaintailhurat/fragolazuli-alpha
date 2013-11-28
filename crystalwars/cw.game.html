@@ -12,42 +12,10 @@
 
 	</style>
 
-	<!-- GOOGLE WEBSOCKET API -->
-	<script type="text/javascript" src="/_ah/channel/jsapi"></script>
-	<!-- JQUERY 2.x-->
-	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-	<!-- MAIN SCRIPT -->
-	<script type="text/javascript">
-	// TODO put that in another file
+	<!-- REQUIREJS -->
+	<script data-main="/javascript/crystalwars/main" src="/javascript/crystalwars/require.js"></script>
 
-
-	$(document).ready(function() {
-
-		console.log('ready');
-
-		channel = new goog.appengine.Channel('{{token}}');
-	    socket = channel.open();
-	    socket.onopen = function() {
-	    	console.log('Socket is opened');
-	    };
-	    socket.onmessage = function(data) {
-	    	console.log('A message received from the server via the channel');
-	    	console.log('Data was : ' + data);
-	    };
-	    socket.onerror = function() {
-	    	console.log('There was a com error with the channel');
-	    };
-	    socket.onclose = function() {
-	    	console.log('Socket just closed');
-	    };
-		
-
-		$('#test').click(function() {
-			console.log('click');
-		});
-	});
-
-	</script>
+	
 </head>
 
 <body>
@@ -57,6 +25,46 @@
 	<p>with token {{ token }}</p>
 	<button id="test">SEND</button>
 
+
+<!-- CHANNEL API -->
+	<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+
+	<!-- BOOT -->
+	<script type="text/javascript">
+	// TODO put that in another file
+
+	var CW = CW || {};
+
+		CW.currentPlayer = '{{ player }}';
+		CW.token = '{{ token }}';
+		CW.gameURL = '/crystalwars/game/{{ id }}';
+
+		/*
+		Messaging code ; cant be put in a separate file ???
+		*/
+		channel = new goog.appengine.Channel(CW.token);
+	    socket = channel.open();
+	    socket.onopen = function() {
+			console.log('Socket is open');
+		};
+	    socket.onmessage = function(data) {
+    		console.log('A message received from the server via the channel');
+    		console.log('Data was : ' + data);
+    	};
+	    socket.onerror = function() {
+    		console.log('There was a com error with the channel');
+    	};
+	    socket.onclose = function() {
+
+	    	superagent
+	    		.put(CW.gameURL)
+	    		.query({ p : CW.currentPlayer, c : deconnected })
+	    		.end
+        	
+    		console.log('Socket just closed');
+    	};
+	
+	</script>
 </body>
 
 </html>

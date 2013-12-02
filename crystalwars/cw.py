@@ -100,3 +100,26 @@ class CWGameHandler(webapp2.RequestHandler):
         Delete a game
         """
         self.response.out.write(json.dumps({'m' : 'DELETE on a game'}))
+
+###
+# MOCK HANDLER
+###
+class CWMockGameHandler(webapp2.RequestHandler):
+    """
+    map to /mockgame/
+    Used for UI testing purpose
+    """
+
+    def get(self):
+        token = channel.create_channel('mockgame')
+        template = jinja_environment.get_template('cw.game.html')
+        grid = [
+            ['nexus'],['land'],['land'],['land'],
+            ['land'],['land'],['land'],['nexus']
+        ]
+        self.response.out.write(template.render({
+            'id' : '123456', # can't use gameId, makes it buggy
+            'token' : token,
+            'player' : 'player',
+            'grid' : json.dumps(grid)
+            }))

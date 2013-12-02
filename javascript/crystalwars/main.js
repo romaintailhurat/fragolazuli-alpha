@@ -5,29 +5,26 @@ with help from RequireJS
 
 require(
 	[
-	'/javascript/crystalwars/cw.components.js',
 	'/javascript/crystalwars/lib/superagent.js',
 	'/javascript/crystalwars/lib/jquery-2.0.3.min.js',
 	'/javascript/crystalwars/lib/crafty.0.5.3.js',
-	'/javascript/crystalwars/cw.messaging.js'
+	'/javascript/crystalwars/cw.messaging.js',
+	'/javascript/crystalwars/cw.components.js'
 	],
 
  	function(
  		components, 
  		jsapi,
- 		superagent, 
+ 		sa, 
  		jquery,
  		crafty, 
  		messaging) {
 
-	console.log('dependencies have been loaded.');
+	console.log('dependencies have been loaded.')
 
 	// ----------
 
 	console.log('ready');
-
-	// Name declared as parameters cannot be used
-	truc();
 	
 	/*
 	TEST
@@ -53,6 +50,17 @@ require(
 	*/
 	Crafty.init(400,200,'game-view');
 	Crafty.background('#666666');
+
+	// FIXME use crafty.Load instead !
+	setTimeout(function() { 
+		console.log('been waiting for 3sec'); 
+
+		var testEntity = Crafty.e('NexusTile');
+		testEntity
+			.attr({ x : 0, y : 0, w : 64 , h : 64 });
+
+	}, 3000);
+
 
 });
 

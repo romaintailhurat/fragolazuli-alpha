@@ -114,8 +114,10 @@ class CWMockGameHandler(webapp2.RequestHandler):
         token = channel.create_channel('mockgame')
         template = jinja_environment.get_template('cw.game.html')
         grid = [
-            ['nexus'],['land'],['land'],['land'],
-            ['land'],['land'],['land'],['nexus']
+            ['Nexus','Land','Land','Land'],
+            ['Land','Land','Land','Land'],
+            ['Land','Land','Land','Nexus'],
+            ['Land','Land','Land','Land']
         ]
         self.response.out.write(template.render({
             'id' : '123456', # can't use gameId, makes it buggy

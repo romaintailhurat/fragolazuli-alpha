@@ -11,10 +11,6 @@
 	}
 
 	</style>
-
-	<!-- REQUIREJS -->
-	<script data-main="/javascript/crystalwars/main" src="/javascript/crystalwars/require.js"></script>
-
 	
 </head>
 
@@ -25,20 +21,21 @@
 	<p>with token {{ token }}</p>
 	<button id="test">SEND</button>
 
-
-<!-- CHANNEL API -->
+	<!-- CHANNEL API -->
 	<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 
 	<!-- BOOT -->
 	<script type="text/javascript">
 	// TODO put that in another file
 
+		console.debug('in boot script in the body');
+
 	var CW = CW || {};
 
 		CW.currentPlayer = '{{ player }}';
 		CW.token = '{{ token }}';
 		CW.gameURL = '/crystalwars/game/{{ id }}',
-		CW.grid = '{{ grid }}';
+		CW.grid = JSON.parse('{{ grid }}');
 
 		/*
 		Messaging code ; cant be put in a separate file ???
@@ -66,6 +63,10 @@
     	};
 	
 	</script>
+
+	<!-- REQUIREJS -->
+	<script data-main="/javascript/crystalwars/main" src="/javascript/crystalwars/require.js"></script>
+
 </body>
 
 </html>

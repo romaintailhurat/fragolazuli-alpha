@@ -13,6 +13,11 @@ require([
 
 		});
 
+		Crafty.sprite(64, 'https://wiki.srb2.org/w/images/f/f9/GRASS3.png', {
+
+			Land : [0, 0]
+		})
+
 		// ---------- TILES
 
 		Crafty.c('Tile', {
@@ -31,6 +36,14 @@ require([
 				this.bind('Click', function() {
 					console.log('you clicked on a nexus.');
 				});
+			}
+
+		});
+
+		Crafty.c('LandTile', {
+
+			init : function() {
+				this.addComponent('Tile, SpriteAnimation, Land');
 			}
 
 		});

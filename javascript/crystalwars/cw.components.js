@@ -6,8 +6,11 @@ require([
 	'/javascript/crystalwars/lib/crafty.0.5.3.js'],
 	function(crafty) {
 
+		var localNexus = '/images/crystalwars/nexus.png',
+			testNexus = 'http://madmoizerg.com/wp-content/uploads/2012/05/3260126777_5da2fa24a7.jpg';
+
 		// ---------- SPRITES
-		Crafty.sprite(64, '/images/crystalwars/nexus.png', {
+		Crafty.sprite(64, localNexus, {
 			
 			Nexus1 : [0, 0]
 

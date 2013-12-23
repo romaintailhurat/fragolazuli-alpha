@@ -9,7 +9,8 @@ require(
 	'/javascript/crystalwars/lib/jquery-2.0.3.min.js',
 	'/javascript/crystalwars/lib/crafty.0.5.3.js',
 	'/javascript/crystalwars/cw.messaging.js',
-	'/javascript/crystalwars/cw.components.js'
+	'/javascript/crystalwars/cw.components.js',
+	'/javascript/crystalwars/cw.grid.js'
 	],
 
  	function(sa, 
@@ -89,27 +90,8 @@ require(
 
 		// TODO extract in utils package ?
 		// FIXME underscore map !!!
-		for (var i = 0 ; i < CW.grid.length ; i++) {
-			
-			for (var j = 0 ; j < CW.grid[i].length ; j++) {
-				
-				var tileType = CW.grid[i][j],
-					tileSuffix = 'Tile'; // FIXME must be a constant
-
-				console.debug('Creating tile of type : ' + tileType + tileSuffix);
-
-
-				console.debug(i * CW.tiles.W);
-				Crafty.e(tileType+tileSuffix)
-					.attr({
-					 x : i * CW.tiles.W,
-					 y : j * CW.tiles.H,
-					 w : CW.tiles.W,
-					 h : CW.tiles.H
-					});
-
-			}
-		}
+		CW.createEntitiesFromGrid(CW.grid);
+		
 	});
 
 

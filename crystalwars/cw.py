@@ -11,6 +11,7 @@ from google.appengine.api import channel
 from logging import *
 
 import models
+import utils
 
 getLogger('cw').setLevel(DEBUG)
 
@@ -113,12 +114,8 @@ class CWMockGameHandler(webapp2.RequestHandler):
     def get(self):
         token = channel.create_channel('mockgame')
         template = jinja_environment.get_template('cw.game.html')
-        grid = [
-            ['Nexus','Land','Land','Land'],
-            ['Land','Land','Land','Land'],
-            ['Land','Land','Land','Nexus'],
-            ['Land','Land','Land','Land']
-        ]
+        grid = utils.generateGrid(20, 20)
+
         self.response.out.write(template.render({
             'id' : '123456', # can't use gameId, makes it buggy
             'token' : token,

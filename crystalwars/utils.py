@@ -34,8 +34,8 @@ def generateGrid(N,M):
 	nexus1Position = chooseRandomPosition(N, M)
 	nexus2Position = chooseRandomPosition(N, M)
 
-	grid[nexus1Position[0]][nexus1Position[1]] = 'Nexus'
-	grid[nexus2Position[0]][nexus2Position[1]] = 'Nexus'
+	grid [nexus1Position[0]] [nexus1Position[1]] = 'Nexus'
+	grid [nexus2Position[0]] [nexus2Position[1]] = 'Nexus'
 
 	return grid
 
@@ -48,8 +48,8 @@ def chooseType(listOfTypes):
 	return listOfTypes[randomIndex]
 
 def chooseRandomPosition(N, M):
-	n = randint(0, N)
-	m = randint(0, M)
+	n = randint(0, N - 1)
+	m = randint(0, M - 1)
 	return [n,m]
 
 

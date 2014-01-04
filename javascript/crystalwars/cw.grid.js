@@ -1,5 +1,8 @@
 
 CW = CW || {};
+
+CW.entities = [];
+
 /*
 Create relevant entities from grid
 */
@@ -11,11 +14,8 @@ CW.createEntitiesFromGrid = function(grid) {
 			var tileType = grid[i][j],
 				tileSuffix = 'Tile'; // FIXME must be a constant
 
-			console.debug('Creating tile of type : ' + tileType + tileSuffix);
-
-
-			console.debug(i * CW.tiles.W);
-			Crafty.e(tileType+tileSuffix)
+			// Create entity
+			var ent = Crafty.e(tileType+tileSuffix)
 				.attr({
 				 x : i * CW.tiles.W,
 				 y : j * CW.tiles.H,
@@ -23,6 +23,17 @@ CW.createEntitiesFromGrid = function(grid) {
 				 h : CW.tiles.H
 				});
 
+			// Add entity to global entities array
+			CW.entities.push(ent);
+
 		}
 	}
+
+	// Update FoW conditions
+	CW.entities.map(function(ent) {
+
+		if (ent.__c.Beacon) {
+			ent.emit(ent.x, ent.y, CW.entities);
+		}
+	});
 };

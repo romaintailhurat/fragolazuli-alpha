@@ -10,16 +10,108 @@ require([
 			testNexus = 'http://madmoizerg.com/wp-content/uploads/2012/05/3260126777_5da2fa24a7.jpg';
 
 		// ---------- SPRITES
+
 		Crafty.sprite(64, localNexus, {
 			
-			Nexus1 : [0, 0]
+			Nexus1Sprite : [0, 0]
 
 		});
 
 		Crafty.sprite(64, 'https://wiki.srb2.org/w/images/f/f9/GRASS3.png', {
 
-			Land : [0, 0]
-		})
+			LandSprite : [0, 0]
+		});
+
+		Crafty.sprite(64, 'http://userserve-ak.last.fm/serve/64/91490815.jpg', {
+
+			BlackTileSprite : [0, 0]
+
+		});
+
+		// ---------- FOG OF WAR
+
+		Crafty.c('Beacon', {
+		  
+		  init : function(){
+		    
+		  },
+
+		  emit : function(x, y, entities) {
+
+		  	console.debug('Emitting for this beacon');
+		    
+		    var xx = x,
+		        yy = y;
+
+		    entities.map(function(ent) {
+		      
+		      var entityNeighboursConditions = 
+		        ent.x === xx - 64  && ent.y === yy - 64 ||
+		        ent.x === xx && ent.y === yy - 64 ||
+		        ent.x === xx + 64 && ent.y === yy - 64 ||
+		        ent.x === xx - 64  && ent.y === yy ||
+		        ent.x === xx + 64  && ent.y === yy ||
+		        ent.x === xx - 64  && ent.y === yy + 64 ||
+		        ent.x === xx && ent.y === yy + 64 ||
+		        ent.x === xx + 64  && ent.y === yy + 64;
+		      
+		      if ( entityNeighboursConditions ) {
+		      	console.debug('One entity is neighbour of a beacon');
+		        ent.receive('add');
+		      }
+		    });
+		  }
+		});
+
+		Crafty.c('Foggable', {
+		  
+		  // component field 
+		  _beacons : 0,
+		  
+		  receive : function(operation) {
+		    
+		    console.debug('receive function called on ' + this + ' with operation ' + operation);
+		    
+		    if (operation === 'add') {
+		      this._beacons += 1;
+		    } else if (operation === 'subtract') {
+		      this._beacons -= 1;
+		    }
+
+		    this.updateDisplay();
+		    
+		    
+		  },
+
+		  updateDisplay : function() {
+		  	
+			if (this._beacons > 0) {
+				this.toOriginalTile();
+
+	    	} else {
+	    		this.toBlackTile();
+	    	}
+
+		  },
+
+		  toOriginalTile : function() {
+
+		  	if (this.__c.BlackTileSprite) {
+	      			delete this.__c.BlackTileSprite;
+	      		}
+	      		
+	      	this.addComponent(this._originalSprite);
+		  },
+
+		  toBlackTile : function() {
+
+			delete this.__c[this._originalSprite];
+			this.addComponent('BlackTileSprite');
+
+		}
+
+		});
+
 
 		// ---------- TILES
 
@@ -34,7 +126,7 @@ require([
 		Crafty.c('NexusTile', {
 
 			init: function() {
-				this.addComponent('Tile, SpriteAnimation, Nexus1');
+				this.addComponent('Tile, SpriteAnimation, Nexus1Sprite, Beacon');
 
 				this.bind('Click', function() {
 					console.log('you clicked on a nexus.');
@@ -45,8 +137,10 @@ require([
 
 		Crafty.c('LandTile', {
 
+			_originalSprite : 'LandSprite',
+
 			init : function() {
-				this.addComponent('Tile, SpriteAnimation, Land');
+				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable');
 			}
 
 		});

@@ -65,7 +65,7 @@ require(
 
 	Crafty.load(['/images/crystalwars/nexus.png'], function(){
 
-		// Load intro scene; Should be 'ready' screen
+		// Load intro scene; it should be 'ready' screen
 		Crafty.scene(MAIN);
 	});
 
@@ -88,8 +88,6 @@ require(
 	*/
 	Crafty.scene(MAIN, function() {
 
-		// TODO extract in utils package ?
-		// FIXME underscore map !!!
 		CW.createEntitiesFromGrid(CW.grid);
 		
 	});

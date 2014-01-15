@@ -9,7 +9,7 @@ def generateGrid(N,M):
 	"""
 	grid = []
 
-	types = ['Land']
+	types = ['Land', 'Rock']
 
 	maxNexus = 2
 

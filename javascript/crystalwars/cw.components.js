@@ -22,6 +22,12 @@ require([
 			LandSprite : [0, 0]
 		});
 
+		Crafty.sprite(64, 'http://fc08.deviantart.net/fs40/f/2009/042/d/5/64x64_RPG_2d_rock_tile_by_lendrick.png', {
+
+			RockSprite : [0, 0]
+
+		});
+
 		Crafty.sprite(64, 'http://userserve-ak.last.fm/serve/64/91490815.jpg', {
 
 			BlackTileSprite : [0, 0]
@@ -130,6 +136,10 @@ require([
 
 				this.bind('Click', function() {
 					console.log('you clicked on a nexus.');
+					if (CW.flags.destroy) {
+						console.debug('destroying this entity : ' + this._entityName);
+						delete this;
+					}
 				});
 			}
 
@@ -138,6 +148,16 @@ require([
 		Crafty.c('LandTile', {
 
 			_originalSprite : 'LandSprite',
+
+			init : function() {
+				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable');
+			}
+
+		});
+
+		Crafty.c('RockTile', {
+
+			_originalSprite : 'RockSprite',
 
 			init : function() {
 				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable');

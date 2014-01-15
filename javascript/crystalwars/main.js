@@ -8,6 +8,7 @@ require(
 	'/javascript/crystalwars/lib/superagent.js',
 	'/javascript/crystalwars/lib/jquery-2.0.3.min.js',
 	'/javascript/crystalwars/lib/crafty.0.5.3.js',
+	'/javascript/crystalwars/cw.keyboard.js',
 	'/javascript/crystalwars/cw.messaging.js',
 	'/javascript/crystalwars/cw.components.js',
 	'/javascript/crystalwars/cw.grid.js'

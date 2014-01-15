@@ -151,6 +151,15 @@ require([
 
 			init : function() {
 				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable');
+
+				this.bind('Click', function() {
+					console.log('you clicked on a Land tile');
+					if (CW.flags.sonde) {
+						console.debug('adding Beacon component to this tile');
+						this.addComponent('Beacon');
+						this.emit(this.x, this.y, CW.entities);
+					}
+				});
 			}
 
 		});
@@ -161,6 +170,15 @@ require([
 
 			init : function() {
 				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable');
+
+				this.bind('Click', function() {
+					console.log('you clicked on a Land tile');
+					if (CW.flags.sonde) {
+						console.debug('adding Beacon component to this tile');
+						this.addComponent('Beacon');
+						this.emit(this.x, this.y, CW.entities);
+					}
+				});
 			}
 
 		});

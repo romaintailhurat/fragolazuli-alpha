@@ -6,7 +6,8 @@ Handling keyboard with Mousetrap
 CW = CW || {};
 
 CW.flags = {
-	destroy : false
+	destroy : false,
+	sonde : false
 };
 
 require(['http://cdn.craig.is/js/mousetrap/mousetrap.min.js'], function(Mousetrap) {
@@ -18,5 +19,13 @@ require(['http://cdn.craig.is/js/mousetrap/mousetrap.min.js'], function(Mousetra
 
 		console.debug('destroy flags : ' + CW.flags.destroy); 
 
+	});
+
+	Mousetrap.bind(['s', 'S'], function() {
+		console.debug('s or S via Mousetrap');
+
+		CW.flags.sonde ? CW.flags.sonde = false : CW.flags.sonde = true;
+
+		console.debug('sonde flags : ' + CW.flags.sonde);		
 	});
 });

@@ -34,8 +34,8 @@ def generateGrid(N,M):
 	nexus1Position = chooseRandomPosition(N, M)
 	nexus2Position = chooseRandomPosition(N, M)
 
-	grid [nexus1Position[0]] [nexus1Position[1]] = 'Nexus'
-	grid [nexus2Position[0]] [nexus2Position[1]] = 'Nexus'
+	grid [nexus1Position[0]] [nexus1Position[1]] = 'NexusP1'
+	grid [nexus2Position[0]] [nexus2Position[1]] = 'NexusP2'
 
 	return grid
 

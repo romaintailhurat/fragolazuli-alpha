@@ -5,6 +5,8 @@ from logging import *
 
 class Game(db.Model):
 
+    # TODO we need a field for the grid !
+
     state = db.StringProperty()
     player1Here = db.BooleanProperty()
     player2Here = db.BooleanProperty()

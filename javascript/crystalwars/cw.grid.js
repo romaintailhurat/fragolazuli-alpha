@@ -15,7 +15,7 @@ CW.createEntitiesFromGrid = function(grid) {
 				tileSuffix = 'Tile'; // FIXME must be a constant
 
 			// Create entity
-			var ent = Crafty.e(tileType+tileSuffix)
+			var ent = Crafty.e(tileType + tileSuffix)
 				.attr({
 				 x : i * CW.tiles.W,
 				 y : j * CW.tiles.H,
@@ -32,8 +32,15 @@ CW.createEntitiesFromGrid = function(grid) {
 	// Update FoW conditions
 	CW.entities.map(function(ent) {
 
+		// If entity is of kind Beacon, we MAY have to lift the fog
 		if (ent.__c.Beacon) {
-			ent.emit(ent.x, ent.y, CW.entities);
+
+			// Check if entity is owned by the current player
+			// It it the init phase, so that Beacon MUST be a Nexus
+			if (ent._player === CW.currentPlayer) {
+				ent.emit(ent.x, ent.y, CW.entities);	
+			}
+			
 		}
 	});
 };

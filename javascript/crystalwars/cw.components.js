@@ -59,7 +59,8 @@ require([
 		        ent.x === xx + 64  && ent.y === yy ||
 		        ent.x === xx - 64  && ent.y === yy + 64 ||
 		        ent.x === xx && ent.y === yy + 64 ||
-		        ent.x === xx + 64  && ent.y === yy + 64;
+		        ent.x === xx + 64  && ent.y === yy + 64 ||
+		        ent.x === xx && ent.y === yy;
 		      
 		      if ( entityNeighboursConditions ) {
 		      	console.debug('One entity is neighbour of a beacon');
@@ -119,6 +120,24 @@ require([
 		});
 
 
+		// ---------- LIFE
+
+		Crafty.c('Life', {
+
+			_life : 0,
+
+			init : function() {
+
+			},
+
+			setLife : function(lifeLevel) {
+				this._life = lifeLevel;
+				console.debug('Setting life to ' + lifeLevel);
+				console.debug('this._life : ' + this._life);
+			}
+
+		});
+
 		// ---------- TILES
 
 		Crafty.c('Tile', {
@@ -129,10 +148,17 @@ require([
 
 		});
 
+		// Nexus
+
 		Crafty.c('NexusTile', {
 
+			_originalSprite : 'Nexus1Sprite',
+
 			init: function() {
-				this.addComponent('Tile, SpriteAnimation, Nexus1Sprite, Beacon');
+				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable, Beacon, Life');
+
+				// Life bar
+				this.setLife(100);
 
 				this.bind('Click', function() {
 					console.log('you clicked on a nexus.');
@@ -141,6 +167,28 @@ require([
 						delete this;
 					}
 				});
+			}
+
+		});
+
+		// Nexus player1
+		Crafty.c('NexusP1Tile', {
+
+			_player : 'player1',
+
+			init : function() {
+				this.addComponent('NexusTile');
+			}
+
+		});
+
+		// Nexus player2
+		Crafty.c('NexusP2Tile', {
+
+			_player : 'player2',
+
+			init : function() {
+				this.addComponent('NexusTile');
 			}
 
 		});

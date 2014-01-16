@@ -119,6 +119,6 @@ class CWMockGameHandler(webapp2.RequestHandler):
         self.response.out.write(template.render({
             'id' : '123456', # can't use gameId, makes it buggy
             'token' : token,
-            'player' : 'player',
+            'player' : 'player1',
             'grid' : json.dumps(grid)
             }))

@@ -11,24 +11,24 @@ require([
 
 		// ---------- SPRITES
 
-		Crafty.sprite(64, localNexus, {
+		Crafty.sprite(CW.tiles.W, localNexus, {
 			
 			Nexus1Sprite : [0, 0]
 
 		});
 
-		Crafty.sprite(64, 'https://wiki.srb2.org/w/images/f/f9/GRASS3.png', {
+		Crafty.sprite(CW.tiles.W, 'https://wiki.srb2.org/w/images/f/f9/GRASS3.png', {
 
 			LandSprite : [0, 0]
 		});
 
-		Crafty.sprite(64, 'http://fc08.deviantart.net/fs40/f/2009/042/d/5/64x64_RPG_2d_rock_tile_by_lendrick.png', {
+		Crafty.sprite(CW.tiles.W, 'http://fc08.deviantart.net/fs40/f/2009/042/d/5/64x64_RPG_2d_rock_tile_by_lendrick.png', {
 
 			RockSprite : [0, 0]
 
 		});
 
-		Crafty.sprite(64, 'http://userserve-ak.last.fm/serve/64/91490815.jpg', {
+		Crafty.sprite(CW.tiles.W, 'http://userserve-ak.last.fm/serve/64/91490815.jpg', {
 
 			BlackTileSprite : [0, 0]
 
@@ -50,16 +50,20 @@ require([
 		        yy = y;
 
 		    entities.map(function(ent) {
+
+		    	console.debug('ent.x : ' + ent.x);
+		    	var test = xx - CW.tiles.W;
+		    	console.debug('xx - 64 : ' + test);
 		      
 		      var entityNeighboursConditions = 
-		        ent.x === xx - 64  && ent.y === yy - 64 ||
-		        ent.x === xx && ent.y === yy - 64 ||
-		        ent.x === xx + 64 && ent.y === yy - 64 ||
-		        ent.x === xx - 64  && ent.y === yy ||
-		        ent.x === xx + 64  && ent.y === yy ||
-		        ent.x === xx - 64  && ent.y === yy + 64 ||
-		        ent.x === xx && ent.y === yy + 64 ||
-		        ent.x === xx + 64  && ent.y === yy + 64 ||
+		        ent.x === xx - CW.tiles.W  && ent.y === yy - CW.tiles.H ||
+		        ent.x === xx && ent.y === yy - CW.tiles.H ||
+		        ent.x === xx + CW.tiles.W && ent.y === yy - CW.tiles.H ||
+		        ent.x === xx - CW.tiles.W  && ent.y === yy ||
+		        ent.x === xx + CW.tiles.W  && ent.y === yy ||
+		        ent.x === xx - CW.tiles.W  && ent.y === yy + CW.tiles.H ||
+		        ent.x === xx && ent.y === yy + CW.tiles.H ||
+		        ent.x === xx + CW.tiles.W  && ent.y === yy + CW.tiles.H ||
 		        ent.x === xx && ent.y === yy;
 		      
 		      if ( entityNeighboursConditions ) {
@@ -205,6 +209,11 @@ require([
 					if (CW.flags.sonde) {
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
+						
+						// TODO supprimer
+						console.debug('Land tile x is : ' + this.x);
+						console.debug('Land tile y is : ' + this.y);
+						
 						this.emit(this.x, this.y, CW.entities);
 					}
 				});
@@ -224,6 +233,11 @@ require([
 					if (CW.flags.sonde) {
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
+						
+						// TODO supprimer
+						console.debug('Land tile x is : ' + this.x);
+						console.debug('Land tile y is : ' + this.y);
+
 						this.emit(this.x, this.y, CW.entities);
 					}
 				});

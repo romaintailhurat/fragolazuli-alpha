@@ -64,7 +64,8 @@ class CWGameHandler(webapp2.RequestHandler):
         self.response.out.write(template.render({
             'id' : game.key().id(), # can't use gameId, makes it buggy
             'token' : token,
-            'player' : player
+            'player' : player,
+            'grid' : json.dumps(game.grid)
             }))
 
     def post(self):

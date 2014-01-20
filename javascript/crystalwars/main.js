@@ -30,8 +30,8 @@ require(
 	CW = CW || {};
 
 	CW.tiles = {
-		W : 64,
-		H : 64
+		W : 32,
+		H : 32
 	};
 
 	CW.screen = {

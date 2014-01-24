@@ -50,10 +50,6 @@ require([
 		        yy = y;
 
 		    entities.map(function(ent) {
-
-		    	console.debug('ent.x : ' + ent.x);
-		    	var test = xx - CW.tiles.W;
-		    	console.debug('xx - 64 : ' + test);
 		      
 		      var entityNeighboursConditions = 
 		        ent.x === xx - CW.tiles.W  && ent.y === yy - CW.tiles.H ||
@@ -69,7 +65,18 @@ require([
 		      if ( entityNeighboursConditions ) {
 		      	console.debug('One entity is neighbour of a beacon');
 		        ent.receive('add');
+
+		        // FIXME create a method
+		        // Check if player 1 has discovered a player2 Nexus
+		        if (CW.currentPlayer === 'player1') {
+		      		if (ent.__c.NexusP2Tile) {
+		      			console.warn('you just discovered a player2 Nexus !');
+		      		}
 		      }
+
+		      }
+
+		      
 		    });
 		  }
 		});
@@ -164,6 +171,7 @@ require([
 				// Life bar
 				this.setLife(100);
 
+				// FIXME add the sonde action to the click !!!
 				this.bind('Click', function() {
 					console.log('you clicked on a nexus.');
 					if (CW.flags.destroy) {
@@ -206,6 +214,8 @@ require([
 
 				this.bind('Click', function() {
 					console.log('you clicked on a Land tile');
+
+					// Action 'sonde' est sélectionnée
 					if (CW.flags.sonde) {
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
@@ -230,6 +240,8 @@ require([
 
 				this.bind('Click', function() {
 					console.log('you clicked on a Land tile');
+
+					// Action 'sonde' est sélectionnée
 					if (CW.flags.sonde) {
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');

@@ -29,6 +29,9 @@ require(
 	
 	CW = CW || {};
 
+	// FIXME la taille des sprites est 32x32 à cause d'un bug de décalage
+	// lors du scroll de la page =(
+
 	CW.tiles = {
 		W : 32,
 		H : 32

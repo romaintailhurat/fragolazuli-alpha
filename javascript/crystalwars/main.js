@@ -14,7 +14,7 @@ require(
 	'/javascript/crystalwars/cw.grid.js'
 	],
 
- 	function(sa, 
+ 	function(superagent, 
  			jquery,
  			crafty,
  			messaging,
@@ -41,25 +41,7 @@ require(
 		W : 20 * CW.tiles.W,
 		H : 20 * CW.tiles.H
 	};
-	
-	/*
-	TEST
-	*/
-	$('#test').click(function() {
 
-		console.log('sending a PUT to ' + window.location.host + '' + CW.gameURL);
-		// sending request with SuperAgent
-		superagent
-			.put(CW.gameURL)
-			.query({ p : CW.currentPlayer })
-			.end(function(res) {
-				if (res.ok) {
-					console.log('PUT was ok.');
-				} else {
-					console.log('Oops, something went wrong with PUT request!')
-				}
-			});
-	});
 
 	/*
 	Crafty initialization
@@ -91,6 +73,9 @@ require(
 	The game scene, once each player is ready
 	*/
 	Crafty.scene(MAIN, function() {
+
+		// Communicator entity
+		CW.communicator = Crafty.e('Communicator');
 
 		CW.createEntitiesFromGrid(CW.grid);
 		

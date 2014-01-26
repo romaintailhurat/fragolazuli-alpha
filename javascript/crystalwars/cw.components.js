@@ -3,8 +3,10 @@ COMPONENTS
 */
 
 require([
-	'/javascript/crystalwars/lib/crafty.0.5.3.js'],
-	function(crafty) {
+	'/javascript/crystalwars/lib/crafty.0.5.3.js',
+	'/javascript/crystalwars/lib/superagent.js'],
+	
+	function(crafty, superagent) {
 
 		var localNexus = '/images/crystalwars/nexus.png',
 			testNexus = 'http://madmoizerg.com/wp-content/uploads/2012/05/3260126777_5da2fa24a7.jpg';
@@ -31,6 +33,37 @@ require([
 		Crafty.sprite(CW.tiles.W, 'http://userserve-ak.last.fm/serve/64/91490815.jpg', {
 
 			BlackTileSprite : [0, 0]
+
+		});
+
+		// ---------- COMMUNICATOR
+
+		/* 
+		This component is in charge with sending message
+		and handling messages (in 'onmessage' function) 
+		from the server
+		*/
+		Crafty.c('Communicator', {
+
+			init : function() {},
+
+			update : function(operation) {
+
+				superagent
+					.put(CW.gameURL)
+					.query({
+						p : CW.currentPlayer,
+						o : operation
+					 })
+					.end(function(res) {
+						if (res.ok) {
+							console.log('PUT was ok.');
+						} else {
+							console.log('Oops, something went wrong with PUT request!')
+						}
+					});
+
+			}
 
 		});
 
@@ -71,8 +104,18 @@ require([
 		        if (CW.currentPlayer === 'player1') {
 		      		if (ent.__c.NexusP2Tile) {
 		      			console.warn('you just discovered a player2 Nexus !');
+		      			
+		      			CW.communicator.update('disco-nexus');
+
 		      		}
-		      }
+		      	} else if (CW.currentPlayer === 'player2') {
+		      		if (ent.__c.NexusP1Tile) {
+		      			console.warn('you just discovered a player2 Nexus !');
+		      			
+		      			CW.communicator.update('disco-nexus');
+		      		}
+		      	}
+
 
 		      }
 
@@ -176,7 +219,13 @@ require([
 					console.log('you clicked on a nexus.');
 					if (CW.flags.destroy) {
 						console.debug('destroying this entity : ' + this._entityName);
-						delete this;
+						// TODO Delete / mutate the entity
+					}
+
+					if (CW.flags.sonde) {
+						console.debug('adding Beacon component to this tile');
+						this.addComponent('Beacon');
+						this.emit(this.x, this.y, CW.entities);
 					}
 				});
 			}
@@ -219,11 +268,6 @@ require([
 					if (CW.flags.sonde) {
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
-						
-						// TODO supprimer
-						console.debug('Land tile x is : ' + this.x);
-						console.debug('Land tile y is : ' + this.y);
-						
 						this.emit(this.x, this.y, CW.entities);
 					}
 				});
@@ -245,11 +289,6 @@ require([
 					if (CW.flags.sonde) {
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
-						
-						// TODO supprimer
-						console.debug('Land tile x is : ' + this.x);
-						console.debug('Land tile y is : ' + this.y);
-
 						this.emit(this.x, this.y, CW.entities);
 					}
 				});
@@ -258,4 +297,3 @@ require([
 		});
 
 	});
-

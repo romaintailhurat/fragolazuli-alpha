@@ -83,8 +83,15 @@ class CWGameHandler(webapp2.RequestHandler):
         Game modification
         """
         sender = self.request.get('p')
+        operation = self.request.get('o')
         log(INFO, 'PUT send by %s' %sender)
         receiver = ''
+
+        operationsHash = {'disco-nexus' : 'your nexus has been discovered !'}
+
+        message = operationsHash[operation]
+
+        log(INFO, 'The message to the other player is : %s' %message)
 
         # TODO : check if modification is ok ?
 
@@ -94,8 +101,10 @@ class CWGameHandler(webapp2.RequestHandler):
         elif(sender == 'player2'):
             receiver = 'player1'
 
-        channel.send_message(gameId + receiver,'the game was modified by the other player')
-        self.response.out.write(json.dumps({'m' : 'PUT on a game'}))
+        # message send to the other player, a.k.a the receiver
+        channel.send_message(gameId + receiver, message)
+        # response to the PUT request
+        self.response.out.write( json.dumps({ 'm' : 'THIS IS A TEST !' }) )
 
     def delete(self, gameId):
         """

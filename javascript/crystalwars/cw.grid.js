@@ -43,4 +43,7 @@ CW.createEntitiesFromGrid = function(grid) {
 			
 		}
 	});
+
+	// At the beginning of a game, each player get a Nexus
+	CW.playerNexusCount += 1;
 };

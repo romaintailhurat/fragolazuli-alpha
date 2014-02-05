@@ -18,6 +18,9 @@ handlers:
 - url: /images
   static_dir: images
 
+- url: /music
+  static_dir: music
+
 - url: /jungle-rugby
   static_dir: jungle-rugby
 

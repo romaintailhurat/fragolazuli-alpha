@@ -8,10 +8,11 @@ require(
 	'/javascript/crystalwars/lib/superagent.js',
 	'/javascript/crystalwars/lib/jquery-2.0.3.min.js',
 	'/javascript/crystalwars/lib/crafty.0.5.3.js',
+	'/javascript/crystalwars/lib/soundjs-0.5.2.min.js',
 	'/javascript/crystalwars/cw.keyboard.js',
 	'/javascript/crystalwars/cw.messaging.js',
 	'/javascript/crystalwars/cw.components.js',
-	'/javascript/crystalwars/cw.grid.js'
+	'/javascript/crystalwars/cw.grid.js',
 	],
 
  	function(superagent, 
@@ -42,6 +43,9 @@ require(
 		H : 20 * CW.tiles.H
 	};
 
+	// Tracks this player Nexus count
+	CW.playerNexusCount = 0;
+
 
 	/*
 	Crafty initialization
@@ -52,7 +56,7 @@ require(
 	Crafty.load(['/images/crystalwars/nexus.png'], function(){
 
 		// Load intro scene; it should be 'ready' screen
-		Crafty.scene(MAIN);
+		Crafty.scene(LOADING);
 	});
 
 	/*
@@ -65,8 +69,18 @@ require(
 
 		intro
 			.replace(html)
-			.attr({ x : 64, y : 64, w : 400, h : 200 })
-			.textColor('#FFFFFF');
+			.attr({ x : 64, y : 64, w : 400, h : 200 });
+
+		// Loading the main theme
+		// FIXME marche pas   =(
+		CW.theme = createjs.Sound.play('/music/crystalwars/gameromV1.mp3');
+		CW.theme.volume = 0.3;
+
+		// Load the main scene after 2 sec
+		setTimeout(function() {
+			console.debug('loading main scene');
+			Crafty.scene(MAIN);
+		}, 2000);
 	});
 
 	/*
@@ -74,10 +88,28 @@ require(
 	*/
 	Crafty.scene(MAIN, function() {
 
+		CW.theme.play();
+
 		// Communicator entity
 		CW.communicator = Crafty.e('Communicator');
 
 		CW.createEntitiesFromGrid(CW.grid);
+
+		// TODO Main loop ???
+
+		var GLOBAL_RESOURCES = 0;
+
+		// TICKER
+		var intervalID = setInterval(function() {
+
+			GLOBAL_RESOURCES += 10 * CW.playerNexusCount;
+
+			document.querySelector('#resources-meter').value = GLOBAL_RESOURCES;
+
+			//console.log('GLOBAL_RESOURCES : ' + GLOBAL_RESOURCES);
+
+		}, 1000);
+		console.debug('intervalID is : ' +  intervalID);
 		
 	});
 

@@ -3,21 +3,28 @@ COMPONENTS
 */
 
 require([
-	'/javascript/crystalwars/lib/crafty.0.5.3.js',
-	'/javascript/crystalwars/lib/superagent.js'],
+	'/javascript/lib/crafty-min.0.6.2.js',
+	'/javascript/crystalwars/lib/superagent.js',
+	'/javascript/lib/underscore-min.js'],
 	
-	function(crafty, superagent) {
+	function(crafty, superagent, underscore) {
 
 		var localNexus = '/images/crystalwars/nexus.png',
-			testNexus = 'http://madmoizerg.com/wp-content/uploads/2012/05/3260126777_5da2fa24a7.jpg';
+			testNexus = 'http://icons.iconarchive.com/icons/aha-soft/perfect-city/32/commercial-building-icon.png';
 
 		// ---------- SPRITES
 
-		Crafty.sprite(CW.tiles.W, localNexus, {
+		Crafty.sprite(CW.tiles.W, testNexus, {
 			
 			Nexus1Sprite : [0, 0]
 
 		});
+
+		Crafty.sprite(CW.tiles.W, localNexus, {
+			
+			Nexus2Sprite : [0, 0]
+
+		});		
 
 		Crafty.sprite(CW.tiles.W, 'https://wiki.srb2.org/w/images/f/f9/GRASS3.png', {
 
@@ -27,6 +34,12 @@ require([
 		Crafty.sprite(CW.tiles.W, 'http://fc08.deviantart.net/fs40/f/2009/042/d/5/64x64_RPG_2d_rock_tile_by_lendrick.png', {
 
 			RockSprite : [0, 0]
+
+		});
+
+		Crafty.sprite(CW.tiles.W, 'http://fr.aiondatabase.com/res/icons/32/icon_item_crystal02b.png', {
+
+			ResourceSprite : [0, 0]
 
 		});
 
@@ -206,7 +219,7 @@ require([
 
 		Crafty.c('NexusTile', {
 
-			_originalSprite : 'Nexus1Sprite',
+			//_originalSprite : 'Nexus1Sprite',
 
 			init: function() {
 				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable, Beacon, Life');
@@ -217,17 +230,34 @@ require([
 				// FIXME add the sonde action to the click !!!
 				this.bind('Click', function() {
 					console.log('you clicked on a nexus.');
-					if (CW.flags.destroy) {
-						console.debug('destroying this entity : ' + this._entityName);
-						// TODO Delete / mutate the entity
-					}
+					// FIXME what is the best condition ???
+					if (!this.__c.BlackTileSprite) {
+						// destroy if it is an ennemy nexus
+						if(this._player !== CW.currentPlayer) {
+							this.toLandTile();
+						}
 
-					if (CW.flags.sonde) {
+					} else {
+						// FIXME put that in a function !
+						CW.playerResources -= 100;
+						document.querySelector('#resources-meter').value = CW.playerResources;
+						document.querySelector('#resources-counter').value = CW.playerResources;
+
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
-						this.emit(this.x, this.y, CW.entities);
+						this.emit(this.x, this.y, CW.entities);	
 					}
 				});
+			},
+
+			toLandTile : function() {
+				console.log('this Nexus --> to LandTile');
+				console.debug('Components list before : ' + _.keys(this.__c));
+				// Check what is the ennemy nexus sprite name
+				var sprite = CW.currentPlayer === 'player1' ? 'Nexus2Sprite' : 'Nexus1Sprite';
+				this.removeComponent('NexusTile, ' + sprite);
+				this.addComponent('LandTile');
+				console.debug('Components list after : ' + _.keys(this.__c));
 			}
 
 		});
@@ -236,6 +266,7 @@ require([
 		Crafty.c('NexusP1Tile', {
 
 			_player : 'player1',
+			_originalSprite : 'Nexus1Sprite',
 
 			init : function() {
 				this.addComponent('NexusTile');
@@ -247,6 +278,7 @@ require([
 		Crafty.c('NexusP2Tile', {
 
 			_player : 'player2',
+			_originalSprite : 'Nexus2Sprite',
 
 			init : function() {
 				this.addComponent('NexusTile');
@@ -264,8 +296,12 @@ require([
 				this.bind('Click', function() {
 					console.log('you clicked on a Land tile');
 
-					// Action 'sonde' est sélectionnée
-					if (CW.flags.sonde) {
+					if (CW.playerResources >= 100) {
+						// FIXME put that in a function !
+						CW.playerResources -= 100;
+						document.querySelector('#resources-meter').value = CW.playerResources;
+						document.querySelector('#resources-counter').value = CW.playerResources;
+
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
 						this.emit(this.x, this.y, CW.entities);
@@ -285,13 +321,61 @@ require([
 				this.bind('Click', function() {
 					console.log('you clicked on a Land tile');
 
-					// Action 'sonde' est sélectionnée
-					if (CW.flags.sonde) {
+					if (CW.playerResources >= 100) {
+						// FIXME put that in a function !
+						CW.playerResources -= 100;
+						document.querySelector('#resources-meter').value = CW.playerResources;
+						document.querySelector('#resources-counter').value = CW.playerResources;
+
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
 						this.emit(this.x, this.y, CW.entities);
 					}
 				});
+			}
+
+		});
+
+		Crafty.c('ResourceTile', {
+
+			_originalSprite : 'ResourceSprite',
+
+			init : function() {
+				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable');
+
+				this.bind('Click', function() {
+					console.log('you clicked on a tile :' + _.keys(this.__c));
+
+					if (CW.playerResources >= 100) {
+
+						console.debug('beacon? ' + this.__c.Beacon);
+
+						// FIXME what is the best condition ???
+						if (!this.__c.BlackTileSprite) {
+							this.toNexus();
+						} else {
+							// FIXME put that in a function !
+							CW.playerResources -= 100;
+							document.querySelector('#resources-meter').value = CW.playerResources;
+							document.querySelector('#resources-counter').value = CW.playerResources;
+
+							console.debug('adding Beacon component to this tile');
+							this.addComponent('Beacon');
+							this.emit(this.x, this.y, CW.entities);	
+						}
+
+						
+					}
+				});
+			},
+
+			toNexus : function() {
+				console.log('to Nexus');
+				console.debug('Components list before : ' + _.keys(this.__c));
+				this.removeComponent('ResourceTile, ResourceSprite');
+				this.addComponent('NexusP1Tile, Nexus1Sprite');
+				CW.playerNexusCount += 1 ;
+				console.debug('Components list after : ' + _.keys(this.__c));
 			}
 
 		});

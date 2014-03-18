@@ -7,7 +7,7 @@ require(
 	[
 	'/javascript/crystalwars/lib/superagent.js',
 	'/javascript/crystalwars/lib/jquery-2.0.3.min.js',
-	'/javascript/crystalwars/lib/crafty.0.5.3.js',
+	'/javascript/lib/crafty-min.0.6.2.js',
 	'/javascript/crystalwars/lib/soundjs-0.5.2.min.js',
 	'/javascript/crystalwars/cw.keyboard.js',
 	'/javascript/crystalwars/cw.messaging.js',
@@ -72,7 +72,7 @@ require(
 			.attr({ x : 64, y : 64, w : 400, h : 200 });
 
 		// Loading the main theme
-		// FIXME marche pas   =(
+		// FIXME déplacer   =(
 		CW.theme = createjs.Sound.play('/music/crystalwars/gameromV1.mp3');
 		CW.theme.volume = 0.3;
 
@@ -95,16 +95,14 @@ require(
 
 		CW.createEntitiesFromGrid(CW.grid);
 
-		// TODO Main loop ???
-
-		var GLOBAL_RESOURCES = 0;
+		CW.playerResources = 0;
 
 		// TICKER
 		var intervalID = setInterval(function() {
 
-			GLOBAL_RESOURCES += 10 * CW.playerNexusCount;
-
-			document.querySelector('#resources-meter').value = GLOBAL_RESOURCES;
+			CW.playerResources += 10 * CW.playerNexusCount;
+			document.querySelector('#resources-meter').value = CW.playerResources;
+			document.querySelector('#resources-counter').innerText = CW.playerResources.toString();
 
 			//console.log('GLOBAL_RESOURCES : ' + GLOBAL_RESOURCES);
 

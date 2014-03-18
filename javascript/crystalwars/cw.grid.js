@@ -4,7 +4,12 @@ CW = CW || {};
 CW.entities = [];
 
 /*
-Create relevant entities from grid
+Create relevant entities from grid.
+A tile component as a name of the form <component>Tile,
+we use that to generate the entities. For example, a grid :
+Rock Nexus Land
+will produce three entities with component :
+RockTile NexusTile LandTile
 */
 CW.createEntitiesFromGrid = function(grid) {
 	for (var i = 0 ; i < grid.length ; i++) {

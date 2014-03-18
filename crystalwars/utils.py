@@ -1,6 +1,6 @@
 # UTILS babe !
 
-from random import randint
+from random import randint, uniform
 
 import unittest
 
@@ -9,7 +9,8 @@ def generateGrid(N,M):
 	"""
 	grid = []
 
-	types = ['Land', 'Rock']
+	# types = ['Land', 'Rock', 'Resource']
+	types = {'Land' : 70, 'Rock': 25, 'Resource' : 5}
 
 	maxNexus = 2
 
@@ -19,14 +20,7 @@ def generateGrid(N,M):
 		grid.append([])
 
 		for j in range(M):
-
-			if maxNexus > 0:
-				type = chooseType(types)
-			else:
-				typesWithoutNexus = filter(lambda item : item != 'Nexus',types)
-				type = chooseType( typesWithoutNexus )
-
-			if type == 'Nexus' : maxNexus -= 1
+			type = weightedChoice(types)
 
 			# add a type in current row
 			grid[i].append(type)
@@ -52,6 +46,20 @@ def chooseRandomPosition(N, M):
 	m = randint(0, M - 1)
 	return [n,m]
 
+def weightedChoice(choices):
+	"""
+	http://stackoverflow.com/questions/3679694/a-weighted-version-of-random-choice
+	adapted with '.items()'' method
+	"""
+	total = sum(w for c, w in choices.items())
+	r = uniform(0, total)
+	upto = 0
+
+	for c, w in choices.items():
+		if upto + w > r:
+			return c
+		upto += w
+
 
 
 # TESTS
@@ -64,6 +72,11 @@ class UtilsTests(unittest.TestCase):
 		positionArray = chooseRandomPosition(n,m)
 		print(positionArray)
 		self.assertTrue(0 <= positionArray[0] <= n and 0 <= positionArray[0] <= m)
+
+	def test_weightedChoice(self):
+		c = weightedChoice( {'Land' : 50, 'Rock': 40, 'Resource' : 10} )
+		print( c )
+		self.assertTrue(True)
 
 if __name__ == '__main__':
 	unittest.main()

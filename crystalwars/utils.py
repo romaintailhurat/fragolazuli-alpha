@@ -6,10 +6,10 @@ import unittest
 
 def generateGrid(N,M):
 	"""
+	Generate a random grid of N x M
 	"""
 	grid = []
 
-	# types = ['Land', 'Rock', 'Resource']
 	types = {'Land' : 70, 'Rock': 25, 'Resource' : 5}
 
 	maxNexus = 2
@@ -35,13 +35,16 @@ def generateGrid(N,M):
 
 def chooseType(listOfTypes):
 	"""
-	Return a type chosen from 
+	Return a type of tile chosen from a given list of tile types
 	"""
 	maxIndex = len(listOfTypes) - 1
 	randomIndex = randint(0, maxIndex)
 	return listOfTypes[randomIndex]
 
 def chooseRandomPosition(N, M):
+	"""
+	Return a random position [n,m] on a N x M grid
+	"""
 	n = randint(0, N - 1)
 	m = randint(0, M - 1)
 	return [n,m]
@@ -60,8 +63,18 @@ def weightedChoice(choices):
 			return c
 		upto += w
 
+def disco_nexus():
+	isOk = True
+	messageToOtherPlayer = 'disco_nexus'
+	return (isOk, messageToOtherPlayer)
 
+def destroy_nexus():
+	pass
+	
+def create_nexus():
+	pass
 
+####################
 # TESTS
 
 class UtilsTests(unittest.TestCase):
@@ -77,6 +90,15 @@ class UtilsTests(unittest.TestCase):
 		c = weightedChoice( {'Land' : 50, 'Rock': 40, 'Resource' : 10} )
 		print( c )
 		self.assertTrue(True)
+
+	def test_exeFuncByName(self):
+		"""
+		Executing a function using the name as a string
+		"""
+		getattr(self,'f')()
+
+	def f(self):
+		print('f function executed')
 
 if __name__ == '__main__':
 	unittest.main()

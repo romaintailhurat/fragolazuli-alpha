@@ -88,6 +88,13 @@ class CWGameHandler(webapp2.RequestHandler):
         receiver = ''
 
         operationsHash = {'disco-nexus' : 'your nexus has been discovered !'}
+        operationList = ['disco_nexus', 'destroy_nexus', 'create_nexus']
+
+        # TODO use the operation string for calling the right function
+        # ex : 'createNexus' string is passed to getattr(<module or class>,'createNexus')()
+        if (operation in operationList) {
+            operationResults = getattr(utils, operation)()
+        }
 
         message = operationsHash[operation]
 

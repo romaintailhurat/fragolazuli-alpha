@@ -62,6 +62,7 @@ require([
 
 			update : function(operation) {
 
+				// FIXME shouldn't it be an asynchronous call ?
 				superagent
 					.put(CW.gameURL)
 					.query({
@@ -70,7 +71,10 @@ require([
 					 })
 					.end(function(res) {
 						if (res.ok) {
+							var responseHash = JSON.parse(res.text);
 							console.log('PUT was ok.');
+							console.log(responseHash.isOk);
+							console.log(responseHash.message);
 						} else {
 							console.log('Oops, something went wrong with PUT request!')
 						}
@@ -118,14 +122,14 @@ require([
 		      		if (ent.__c.NexusP2Tile) {
 		      			console.warn('you just discovered a player2 Nexus !');
 		      			
-		      			CW.communicator.update('disco-nexus');
+		      			CW.communicator.update('disco_nexus');
 
 		      		}
 		      	} else if (CW.currentPlayer === 'player2') {
 		      		if (ent.__c.NexusP1Tile) {
 		      			console.warn('you just discovered a player2 Nexus !');
 		      			
-		      			CW.communicator.update('disco-nexus');
+		      			CW.communicator.update('disco_nexus');
 		      		}
 		      	}
 

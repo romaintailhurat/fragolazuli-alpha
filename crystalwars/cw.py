@@ -87,20 +87,17 @@ class CWGameHandler(webapp2.RequestHandler):
         log(INFO, 'PUT send by %s' %sender)
         receiver = ''
 
-        operationsHash = {'disco-nexus' : 'your nexus has been discovered !'}
+        # FIXME extract the constant
         operationList = ['disco_nexus', 'destroy_nexus', 'create_nexus']
 
-        # TODO use the operation string for calling the right function
+        # Using python introspection with getattr()
         # ex : 'createNexus' string is passed to getattr(<module or class>,'createNexus')()
-        if (operation in operationList) {
+        if (operation in operationList) :
             operationResults = getattr(utils, operation)()
-        }
 
-        message = operationsHash[operation]
+        messageToOtherPlayer = operationResults[1]
 
-        log(INFO, 'The message to the other player is : %s' %message)
-
-        # TODO : check if modification is ok ?
+        log(INFO, 'The message to the other player is : %s' %messageToOtherPlayer)
 
         # Decide which player must receive an update ?
         if(sender == 'player1'):
@@ -109,9 +106,12 @@ class CWGameHandler(webapp2.RequestHandler):
             receiver = 'player1'
 
         # message send to the other player, a.k.a the receiver
-        channel.send_message(gameId + receiver, message)
+        channel.send_message(gameId + receiver, messageToOtherPlayer)
         # response to the PUT request
-        self.response.out.write( json.dumps({ 'm' : 'THIS IS A TEST !' }) )
+        self.response.out.write( json.dumps({ 
+            'isOk' : operationResults[0],
+            'message' : 'THIS IS A TEST !' 
+            }) )
 
     def delete(self, gameId):
         """

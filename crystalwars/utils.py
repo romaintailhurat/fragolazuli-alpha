@@ -2,6 +2,8 @@
 
 from random import randint, uniform
 
+from logging import *
+
 import unittest
 
 def generateGrid(N,M):
@@ -64,6 +66,11 @@ def weightedChoice(choices):
 		upto += w
 
 def disco_nexus():
+	"""
+	Return the results of the operation
+	"""
+	# FIXME instead of a tuple, we could use a OperationResults object ?
+	log(INFO, 'Executing disco_nexus operation')
 	isOk = True
 	messageToOtherPlayer = 'disco_nexus'
 	return (isOk, messageToOtherPlayer)

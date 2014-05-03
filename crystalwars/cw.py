@@ -13,8 +13,12 @@ from logging import *
 import models
 import utils
 
+# LOGGER
 getLogger('cw').setLevel(DEBUG)
 
+# CONSTS
+# FIXME extract the constant
+OPERATION_LIST = ['disco_nexus', 'destroy_nexus', 'create_nexus']
 
 # Setup env to retrieve templates
 jinja_environment = jinja2.Environment(
@@ -80,37 +84,47 @@ class CWGameHandler(webapp2.RequestHandler):
 
     def put(self, gameId):
         """
-        Game modification
+        Game modification.
+        Every change in the elements of the game must be communicated / validated here,
+        and propagated to the other player
         """
-        sender = self.request.get('p')
-        operation = self.request.get('o')
-        log(INFO, 'PUT send by %s' %sender)
-        receiver = ''
+        # The game
+        game = models.Game.get_by_id(int(gameId))
 
-        # FIXME extract the constant
-        operationList = ['disco_nexus', 'destroy_nexus', 'create_nexus']
+        # Request params
+        sender = self.request.get('sender')
+        receiver = ''
+        operation = self.request.get('operation')
+        position = self.request.get('position')
+        positionX, positionY = position.split(',')
+
+        log(INFO, 'PUT send by %s for operation %s and position %s - %s' %(sender, operation, str(positionX),str(positionY)))
 
         # Using python introspection with getattr()
-        # ex : 'createNexus' string is passed to getattr(<module or class>,'createNexus')()
-        if (operation in operationList) :
-            operationResults = getattr(utils, operation)()
+        # ex : 'create_nexus' string is passed to getattr(<module or class>,'create_nexus')()
+        if (operation in OPERATION_LIST) :
+            operationResults = getattr(utils, operation)(game.grid, x=positionX, y=positionY)
+            # FIXME Game.put ???
 
         messageToOtherPlayer = operationResults[1]
 
         log(INFO, 'The message to the other player is : %s' %messageToOtherPlayer)
 
-        # Decide which player must receive an update ?
-        if(sender == 'player1'):
+        # Decide which player must receive an update
+        if (sender == 'player1'):
             receiver = 'player2'
-        elif(sender == 'player2'):
+        elif (sender == 'player2'):
             receiver = 'player1'
 
         # message send to the other player, a.k.a the receiver
-        channel.send_message(gameId + receiver, messageToOtherPlayer)
+        # if operation is ok
+        if (operationResults[0]):
+            channel.send_message(gameId + receiver, json.dumps({'operation' : operation, 'x' : positionX, 'y' : positionY}))
+
         # response to the PUT request
-        self.response.out.write( json.dumps({ 
+        self.response.out.write( json.dumps({
             'isOk' : operationResults[0],
-            'message' : 'THIS IS A TEST !' 
+            'message' : '%s is okay' %operation
             }) )
 
     def delete(self, gameId):

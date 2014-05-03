@@ -17,7 +17,7 @@ def generateGrid(N,M):
 	maxNexus = 2
 
 	for i in range(N):
-		
+
 		# add a row in grid
 		grid.append([])
 
@@ -65,21 +65,49 @@ def weightedChoice(choices):
 			return c
 		upto += w
 
-def disco_nexus():
+def disco_nexus(grid, *args, **kwargs):
 	"""
 	Return the results of the operation
 	"""
 	# FIXME instead of a tuple, we could use a OperationResults object ?
 	log(INFO, 'Executing disco_nexus operation')
 	isOk = True
-	messageToOtherPlayer = 'disco_nexus'
+	messageToOtherPlayer = 'Un de vos Nexus a ete decouvert.'
 	return (isOk, messageToOtherPlayer)
 
-def destroy_nexus():
-	pass
-	
-def create_nexus():
-	pass
+def destroy_nexus(grid, *args, **kwargs):
+
+	# FIXME write a good condition...
+	#if kwargs['x'] or kwargs['y'] is None:
+	#	raise Exception('Missing x or y arguments')
+
+	x = kwargs['x']
+	y = kwargs['y']
+
+	log(INFO, 'Executing destroy_nexus operation in position %s - %s' %(x, y))
+
+	# FIXME add logic !
+	#if grid[x][y] == 'NexusP1' or grid[x][y] == 'NexusP2':
+	#	grid[x][y] == 'Land'
+
+	isOk = True
+	messageToOtherPlayer = 'Un de vos Nexus a ete detruit.'
+
+	return(isOk, messageToOtherPlayer)
+
+
+def create_nexus(grid, *args, **kwargs):
+	x = kwargs['x']
+	y = kwargs['y']
+
+	log(INFO, 'Executing create_nexus operation in position %s - %s' %(x, y))
+
+	# FIXME add logic !
+
+	isOk = True
+	messageToOtherPlayer = 'Un Nexus adverse a ete cree'
+
+	return(isOk, messageToOtherPlayer)
 
 ####################
 # TESTS
@@ -98,14 +126,12 @@ class UtilsTests(unittest.TestCase):
 		print( c )
 		self.assertTrue(True)
 
-	def test_exeFuncByName(self):
-		"""
-		Executing a function using the name as a string
-		"""
-		getattr(self,'f')()
+	def test_kwargs(self):
+		self.f('yo', test='super')
 
-	def f(self):
-		print('f function executed')
+
+	def f(say, *args, **kwargs):
+		print ('%s!' %kwargs['test'] )
 
 if __name__ == '__main__':
 	unittest.main()

@@ -6,7 +6,7 @@ require([
 	'/javascript/lib/crafty-min.0.6.2.js',
 	'/javascript/crystalwars/lib/superagent.js',
 	'/javascript/lib/underscore-min.js'],
-	
+
 	function(crafty, superagent, underscore) {
 
 		var localNexus = '/images/crystalwars/nexus.png',
@@ -15,16 +15,16 @@ require([
 		// ---------- SPRITES
 
 		Crafty.sprite(CW.tiles.W, testNexus, {
-			
+
 			Nexus1Sprite : [0, 0]
 
 		});
 
 		Crafty.sprite(CW.tiles.W, localNexus, {
-			
+
 			Nexus2Sprite : [0, 0]
 
-		});		
+		});
 
 		Crafty.sprite(CW.tiles.W, 'https://wiki.srb2.org/w/images/f/f9/GRASS3.png', {
 
@@ -51,23 +51,29 @@ require([
 
 		// ---------- COMMUNICATOR
 
-		/* 
+		/*
 		This component is in charge with sending message
-		and handling messages (in 'onmessage' function) 
+		and handling messages (in 'onmessage' function)
 		from the server
 		*/
 		Crafty.c('Communicator', {
 
 			init : function() {},
 
-			update : function(operation) {
+			update : function(operation, position) {
+				/*
+				Method use for transmitting update from a player to the server
+				*/
 
-				// FIXME shouldn't it be an asynchronous call ?
+				// FIXME check that position is an array of two int
+
+				// PUT request using superagent
 				superagent
 					.put(CW.gameURL)
 					.query({
-						p : CW.currentPlayer,
-						o : operation
+						sender : CW.currentPlayer,
+						operation : operation,
+						position : position
 					 })
 					.end(function(res) {
 						if (res.ok) {
@@ -75,11 +81,54 @@ require([
 							console.log('PUT was ok.');
 							console.log(responseHash.isOk);
 							console.log(responseHash.message);
+							return responseHash.isOk;
 						} else {
 							console.log('Oops, something went wrong with PUT request!')
+							return false;
 						}
 					});
 
+			},
+
+			disco_nexus : function(x, y) {
+				/*
+				This method is called when a 'disco_nexus' message is sent by the
+				server
+				@param x the x of the discovered nexus
+				@param y the y of the discovered nexus
+				*/
+				console.debug('type de x :' + typeof x);
+				if (typeof x !== 'number' || typeof y!== 'number') {
+					throw new Error('One of the two parameters is not an int');
+				}
+				console.log('The communicator says : disco nexus in ' + x + '-' + y);
+
+
+			},
+
+			destroy_nexus : function(x, y) {
+				/*
+				This method is called when a 'destroy_nexus' message is sent by the
+				server
+				@param x the x of the nexus
+				#param y the y of the nexus
+				*/
+				if (typeof x !== 'number' || typeof y!== 'number') {
+					throw new Error('One of the two parameters is not an int');
+				}
+				console.debug('The communicator says : destroy nexus in ' + x + '-' + y);
+
+				// FIXME maybe not the better implementation
+				// Find and destroy the nexus
+				CW.entities.map(function(ent) {
+					// Looking for the right entities
+					if (ent.x === x && ent.y === y) {
+						//destroy the nexus
+						ent.toLandTile();
+					}
+				});
+				//
+				CW.playerNexusCount -= 1;
 			}
 
 		});
@@ -87,21 +136,24 @@ require([
 		// ---------- FOG OF WAR
 
 		Crafty.c('Beacon', {
-		  
+
 		  init : function(){
-		    
+
 		  },
 
 		  emit : function(x, y, entities) {
 
 		  	console.debug('Emitting for this beacon');
-		    
+
 		    var xx = x,
 		        yy = y;
 
+				// FIXME poor implementation
+				// it should be better to calculate the xs and ys of
+				// the neighbours...
 		    entities.map(function(ent) {
-		      
-		      var entityNeighboursConditions = 
+
+		      var entityNeighboursConditions =
 		        ent.x === xx - CW.tiles.W  && ent.y === yy - CW.tiles.H ||
 		        ent.x === xx && ent.y === yy - CW.tiles.H ||
 		        ent.x === xx + CW.tiles.W && ent.y === yy - CW.tiles.H ||
@@ -111,7 +163,7 @@ require([
 		        ent.x === xx && ent.y === yy + CW.tiles.H ||
 		        ent.x === xx + CW.tiles.W  && ent.y === yy + CW.tiles.H ||
 		        ent.x === xx && ent.y === yy;
-		      
+
 		      if ( entityNeighboursConditions ) {
 		      	console.debug('One entity is neighbour of a beacon');
 		        ent.receive('add');
@@ -121,35 +173,37 @@ require([
 		        if (CW.currentPlayer === 'player1') {
 		      		if (ent.__c.NexusP2Tile) {
 		      			console.warn('you just discovered a player2 Nexus !');
-		      			
-		      			CW.communicator.update('disco_nexus');
+		      			var realX = ent._x / CW.tiles.W,
+		      				realY = ent._y / CW.tiles.H;
+		      			CW.communicator.update('disco_nexus', [realX, realY]);
 
 		      		}
 		      	} else if (CW.currentPlayer === 'player2') {
 		      		if (ent.__c.NexusP1Tile) {
 		      			console.warn('you just discovered a player2 Nexus !');
-		      			
-		      			CW.communicator.update('disco_nexus');
+		      			var realX = ent._x / CW.tiles.W,
+		      				realY = ent._y / CW.tiles.H;
+		      			CW.communicator.update('disco_nexus', [realX, realY]);
 		      		}
 		      	}
 
 
 		      }
 
-		      
+
 		    });
 		  }
 		});
 
 		Crafty.c('Foggable', {
-		  
-		  // component field 
+
+		  // component field
 		  _beacons : 0,
-		  
+
 		  receive : function(operation) {
-		    
+
 		    console.debug('receive function called on ' + this + ' with operation ' + operation);
-		    
+
 		    if (operation === 'add') {
 		      this._beacons += 1;
 		    } else if (operation === 'subtract') {
@@ -157,12 +211,12 @@ require([
 		    }
 
 		    this.updateDisplay();
-		    
-		    
+
+
 		  },
 
 		  updateDisplay : function() {
-		  	
+
 			if (this._beacons > 0) {
 				this.toOriginalTile();
 
@@ -177,7 +231,7 @@ require([
 		  	if (this.__c.BlackTileSprite) {
 	      			delete this.__c.BlackTileSprite;
 	      		}
-	      		
+
 	      	this.addComponent(this._originalSprite);
 		  },
 
@@ -219,11 +273,10 @@ require([
 
 		});
 
-		// Nexus
-
+		/*
+		Nexus
+		*/
 		Crafty.c('NexusTile', {
-
-			//_originalSprite : 'Nexus1Sprite',
 
 			init: function() {
 				this.addComponent('Tile, SpriteAnimation, BlackTileSprite, Foggable, Beacon, Life');
@@ -238,30 +291,55 @@ require([
 					if (!this.__c.BlackTileSprite) {
 						// destroy if it is an ennemy nexus
 						if(this._player !== CW.currentPlayer) {
+							// Send the destroy command !
+							console.debug('Destroy nexus in x : ' + this._x +' y : '+ this._y);
+							CW.communicator.update('destroy_nexus', [this._x, this._y]);
 							this.toLandTile();
 						}
 
 					} else {
 						// FIXME put that in a function !
-						CW.playerResources -= 100;
+						CW.playerResources -= CW.operationCost['use-sonde'];
 						document.querySelector('#resources-meter').value = CW.playerResources;
 						document.querySelector('#resources-counter').value = CW.playerResources;
 
 						console.debug('adding Beacon component to this tile');
 						this.addComponent('Beacon');
-						this.emit(this.x, this.y, CW.entities);	
+						this.emit(this.x, this.y, CW.entities);
 					}
 				});
 			},
 
+			/*
+			This function transform a nexus tile into a land tile
+			by removing and adding the right components.
+			*/
 			toLandTile : function() {
 				console.log('this Nexus --> to LandTile');
 				console.debug('Components list before : ' + _.keys(this.__c));
+
 				// Check what is the ennemy nexus sprite name
-				var sprite = CW.currentPlayer === 'player1' ? 'Nexus2Sprite' : 'Nexus1Sprite';
-				this.removeComponent('NexusTile, ' + sprite);
+				if (CW.currentPlayer === 'player1') {
+					var otherPlayerNexus = 'Nexus2',
+							otherPlayerNexusTile = 'NexusP2Tile';
+				} else {
+					var otherPlayerNexus = 'Nexus1',
+							otherPlayerNexusTile = 'NexusP1Tile';
+				}
+
+				var otherSprite = otherPlayerNexus + 'Sprite';
+
+				// Remove
+				this.removeComponent('NexusTile');
+				this.removeComponent(otherSprite);
+				this.removeComponent(otherPlayerNexusTile);
+
+				// Add
 				this.addComponent('LandTile');
 				console.debug('Components list after : ' + _.keys(this.__c));
+
+				// Now this tile is known, so it must be visible
+				this.toOriginalTile();
 			}
 
 		});
@@ -300,9 +378,9 @@ require([
 				this.bind('Click', function() {
 					console.log('you clicked on a Land tile');
 
-					if (CW.playerResources >= 100) {
+					if (CW.playerResources >= CW.operationCost['use-sonde']) {
 						// FIXME put that in a function !
-						CW.playerResources -= 100;
+						CW.playerResources -= CW.operationCost['use-sonde'];
 						document.querySelector('#resources-meter').value = CW.playerResources;
 						document.querySelector('#resources-counter').value = CW.playerResources;
 
@@ -325,9 +403,9 @@ require([
 				this.bind('Click', function() {
 					console.log('you clicked on a Land tile');
 
-					if (CW.playerResources >= 100) {
+					if (CW.playerResources >= CW.operationCost['use-sonde']) {
 						// FIXME put that in a function !
-						CW.playerResources -= 100;
+						CW.playerResources -= CW.operationCost['use-sonde'];
 						document.querySelector('#resources-meter').value = CW.playerResources;
 						document.querySelector('#resources-counter').value = CW.playerResources;
 
@@ -350,7 +428,7 @@ require([
 				this.bind('Click', function() {
 					console.log('you clicked on a tile :' + _.keys(this.__c));
 
-					if (CW.playerResources >= 100) {
+					if (CW.playerResources >= CW.operationCost['use-sonde']) {
 
 						console.debug('beacon? ' + this.__c.Beacon);
 
@@ -359,16 +437,16 @@ require([
 							this.toNexus();
 						} else {
 							// FIXME put that in a function !
-							CW.playerResources -= 100;
+							CW.playerResources -= CW.operationCost['use-sonde'];
 							document.querySelector('#resources-meter').value = CW.playerResources;
 							document.querySelector('#resources-counter').value = CW.playerResources;
 
 							console.debug('adding Beacon component to this tile');
 							this.addComponent('Beacon');
-							this.emit(this.x, this.y, CW.entities);	
+							this.emit(this.x, this.y, CW.entities);
 						}
 
-						
+
 					}
 				});
 			},
@@ -376,7 +454,8 @@ require([
 			toNexus : function() {
 				console.log('to Nexus');
 				console.debug('Components list before : ' + _.keys(this.__c));
-				this.removeComponent('ResourceTile, ResourceSprite');
+				this.removeComponent('ResourceTile');
+				this.removeComponent('ResourceSprite');
 				this.addComponent('NexusP1Tile, Nexus1Sprite');
 				CW.playerNexusCount += 1 ;
 				console.debug('Components list after : ' + _.keys(this.__c));

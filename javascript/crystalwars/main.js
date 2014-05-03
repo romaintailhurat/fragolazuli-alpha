@@ -43,6 +43,13 @@ require(
 		H : 20 * CW.tiles.H
 	};
 
+	// Actions cost
+	// FIXME naming !!!!
+	CW.operationCost = {
+		'use-sonde' : 10,
+		'destroy-nexus' : 10
+	};
+
 	// Tracks this player Nexus count
 	CW.playerNexusCount = 0;
 

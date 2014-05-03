@@ -11,7 +11,7 @@
 	}
 
 	</style>
-	
+
 </head>
 
 <body>
@@ -21,13 +21,15 @@
 	<p>with token {{ token }}</p>
 	<button id="test">SEND</button>
 	-->
-	
+
 
 	<!-- RESOURCES METER BAR-->
 	<small>Resources counter : <span id="resources-counter"></span></small>
 	<br/>
-	<meter id="resources-meter" min="0" max="1000" value="0">
-	
+	<meter id="resources-meter" min="0" max="1000" value="0"></meter>
+	<br/>
+	<p id="message-display"></p>
+
 	<!-- CHANNEL API -->
 	<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 
@@ -49,15 +51,21 @@
 		*/
 		channel = new goog.appengine.Channel(CW.token);
 	    socket = channel.open();
-	    
+
 	    socket.onopen = function() {
 			console.log('Socket is open');
 		};
 
 	    socket.onmessage = function(message) {
     		console.log('A message received from the server via the channel');
-    		console.log('Message is : ' + message.data);
-    		alert(message.data);
+    		// FIXME a test, to suppress
+				var data = JSON.parse(message.data),
+						x = parseInt(data['x']),
+						y = parseInt(data['y']);
+
+				console.log('The operation is :' + data['operation'] );
+				CW.communicator[ data['operation'] ](x, y);
+    		document.querySelector('#message-display').innerText = data.message;
     	};
 
 	    socket.onerror = function() {
@@ -67,7 +75,7 @@
 	    socket.onclose = function() {
     		console.log('Socket just closed');
     	};
-	
+
 	</script>
 
 	<!-- REQUIREJS -->

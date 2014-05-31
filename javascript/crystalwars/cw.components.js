@@ -58,14 +58,16 @@ require([
 		*/
 		Crafty.c('Communicator', {
 
-			init : function() {},
+			init : function() {
+				console.log('The Communicator is ready');
+			},
 
 			update : function(operation, position) {
 				/*
 				Method use for transmitting update from a player to the server
 				*/
 
-				// FIXME check that position is an array of two int
+				// FIXME check that position param is an array of two int
 
 				// PUT request using superagent
 				superagent
@@ -103,6 +105,30 @@ require([
 				}
 				console.log('The communicator says : disco nexus in ' + x + '-' + y);
 
+
+			},
+
+			create_nexus : function(x, y) {
+				/*
+				This method is called when a 'create_nexus' message is sent by the
+				server
+				@param x the x of the discovered nexus
+				@param y the y of the discovered nexus
+				*/
+				if (typeof x !== 'number' || typeof y!== 'number') {
+					throw new Error('One of the two parameters is not an int');
+				}
+				console.debug('The communicator says : destroy nexus in ' + x + '-' + y);
+
+				// FIXME maybe not the better implementation
+				// Find and destroy the nexus
+				CW.entities.map(function(ent) {
+					// Looking for the right entities
+					if (ent.x === x && ent.y === y) {
+						//create the nexus
+						ent.toNexus();
+					}
+				});
 
 			},
 
@@ -284,7 +310,6 @@ require([
 				// Life bar
 				this.setLife(100);
 
-				// FIXME add the sonde action to the click !!!
 				this.bind('Click', function() {
 					console.log('you clicked on a nexus.');
 					// FIXME what is the best condition ???
@@ -430,10 +455,9 @@ require([
 
 					if (CW.playerResources >= CW.operationCost['use-sonde']) {
 
-						console.debug('beacon? ' + this.__c.Beacon);
-
 						// FIXME what is the best condition ???
 						if (!this.__c.BlackTileSprite) {
+							CW.communicator.update('create_nexus', [this._x, this._y]);
 							this.toNexus();
 						} else {
 							// FIXME put that in a function !
@@ -441,7 +465,6 @@ require([
 							document.querySelector('#resources-meter').value = CW.playerResources;
 							document.querySelector('#resources-counter').value = CW.playerResources;
 
-							console.debug('adding Beacon component to this tile');
 							this.addComponent('Beacon');
 							this.emit(this.x, this.y, CW.entities);
 						}
@@ -453,12 +476,10 @@ require([
 
 			toNexus : function() {
 				console.log('to Nexus');
-				console.debug('Components list before : ' + _.keys(this.__c));
 				this.removeComponent('ResourceTile');
 				this.removeComponent('ResourceSprite');
 				this.addComponent('NexusP1Tile, Nexus1Sprite');
 				CW.playerNexusCount += 1 ;
-				console.debug('Components list after : ' + _.keys(this.__c));
 			}
 
 		});

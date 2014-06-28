@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html ng-app="PlusPlus">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+  <link href="plusplus.css" rel="stylesheet" type="text/css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+  <script src="http://code.jquery.com/jquery.min.js"></script>
+  <script src="http://getbootstrap.com/dist/js/bootstrap.js"></script>
+  <script src="plusplus.js"></script>
+  <title>+ +</title>
+</head>
+<body>
+  <div class="container-fluid" ng-controller="MainCtrl">
+    <div class="row">
+      <span class="factors" ng-repeat="factor in data.factors"> {{ factor }}</span>
+    </div>
+    <div class="row" ng-repeat="(ri, row) in data.grid">
+      <span id="{{ri}}-{{ci}}" ng-click="test($event)" ng-repeat="(ci,cell) in row"> {{ cell }}</span>
+    </div>
+    <div clas="row">
+      <span class="target" ng-repeat="t in data.targets"> {{ t }}</span>
+    </div>
+  </div>
+</body>
+</html>

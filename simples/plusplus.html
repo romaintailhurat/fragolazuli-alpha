@@ -8,6 +8,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
   <script src="http://code.jquery.com/jquery.min.js"></script>
   <script src="http://getbootstrap.com/dist/js/bootstrap.js"></script>
+  <script src="/javascript/lib/lodash.min.js"></script>
   <script src="plusplus.js"></script>
   <title>+ +</title>
 </head>
@@ -17,7 +18,7 @@
       <span class="factors" ng-repeat="factor in data.factors"> {{ factor }}</span>
     </div>
     <div class="row" ng-repeat="(ri, row) in data.grid">
-      <span id="{{ri}}-{{ci}}" ng-click="test($event)" ng-repeat="(ci,cell) in row"> {{ cell }}</span>
+      <span id="{{ri}}-{{ci}}" ng-click="clickCell($event)" ng-repeat="(ci,cell) in row"> {{ cell }}</span>
     </div>
     <div clas="row">
       <span class="target" ng-repeat="t in data.targets"> {{ t }}</span>

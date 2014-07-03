@@ -1,6 +1,26 @@
+/*
+PlusPlus
+
+*/
 
 var PP = angular.module('PlusPlus', {});
 
+
+/*
+This module contains various game logic functions.
+*/
+PP.factory('logic', function () {
+
+  return {
+    isLastCell : function (extract, row, grid) {
+      return extract.position(row) === _.size(grid);
+    }
+  };
+});
+
+/*
+Extraction module
+*/
 PP.factory('extract', function () {
 
   return {
@@ -14,6 +34,9 @@ PP.factory('extract', function () {
 
 });
 
+/*
+Computation module.
+*/
 PP.factory('compute', function () {
   return {
     getFactorNum : function (cellNum) {
@@ -22,15 +45,23 @@ PP.factory('compute', function () {
       } else {
         return cellNum + 1;
       }
+    },
+    getNewValue : function (currentValue, factor) {
+      return (currentValue + factor) % 9;
     }
   };
 });
 
+
+/*
+This is the controller of the main game UI.
+*/
 PP.controller('MainCtrl',
               ['$scope',
                'extract',
                'compute',
-               function($scope, extract, compute) {
+               'logic',
+               function($scope, extract, compute, logic) {
 
   $scope.data = {
   factors : {
@@ -53,7 +84,7 @@ PP.controller('MainCtrl',
   }
 };
 
-  $scope.test = function(e) {
+  $scope.clickCell = function (e) {
     var currId = e.currentTarget.id,
         split = currId.split('-'),
         row = split[0],
@@ -61,18 +92,32 @@ PP.controller('MainCtrl',
         nextRowPos = extract.position(row)+1,
         factorNum = compute.getFactorNum(extract.position(cell)),
         factor = 'f' + factorNum,
-        currentValue = $scope.data.grid[row][cell];
+        currentValue = $scope.data.grid[row][cell],
+        newValue = compute.getNewValue(currentValue, $scope.data.factors[factor]);
 
-    console.debug(factorNum);
-
-    if($scope.data.grid[row][cell] === '-') {
-      // NUTHING
+    if ( !logic.isLastCell(extract, row, $scope.data.grid) ) {
+      // normal execution, see changeCell
+      if($scope.data.grid[row][cell] === '-') {
+        // NUTHING
+      } else {
+        $scope.data.grid[row][cell] = '-';
+        $scope.data.grid['r'+nextRowPos][cell] = newValue;
+      }
     } else {
-      $scope.data.grid[row][cell] = '-';
-      $scope.data.grid['r'+nextRowPos][cell] = currentValue + $scope.data.factors[factor];
+      // is the result is matching the goal, i.e. being equal to 0 ?
+      console.debug('zero position !');
+      if($scope.data.grid[row][cell] === '-') {
+        // NUTHING
+      } else {
+        console.debug(parseInt($scope.data.grid[row][cell]));
+        console.info('is zero ?' + parseInt($scope.data.grid[row][cell]) == 0);
+        $scope.data.grid[row][cell] = '-';
+      }
+
+      // check if it is the last column being dropped to zero
+      // if it is, the game is finished, show the result
     }
 
-
-
   };
+
 }]);

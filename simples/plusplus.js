@@ -95,28 +95,20 @@ PP.controller('MainCtrl',
         currentValue = $scope.data.grid[row][cell],
         newValue = compute.getNewValue(currentValue, $scope.data.factors[factor]);
 
-    if ( !logic.isLastCell(extract, row, $scope.data.grid) ) {
-      // normal execution, see changeCell
-      if($scope.data.grid[row][cell] === '-') {
-        // NUTHING
-      } else {
+    if (currentValue !== '-') {
+      // It's a number cell, act !
+      if (!logic.isLastCell(extract, row, $scope.data.grid)) {
         $scope.data.grid[row][cell] = '-';
         $scope.data.grid['r'+nextRowPos][cell] = newValue;
-      }
-    } else {
-      // is the result is matching the goal, i.e. being equal to 0 ?
-      console.debug('zero position !');
-      if($scope.data.grid[row][cell] === '-') {
-        // NUTHING
       } else {
-        console.debug(parseInt($scope.data.grid[row][cell]));
-        console.info('is zero ?' + parseInt($scope.data.grid[row][cell]) == 0);
         $scope.data.grid[row][cell] = '-';
       }
-
-      // check if it is the last column being dropped to zero
-      // if it is, the game is finished, show the result
     }
+    
+
+    // TODO
+    // check if it is the last column being dropped to zero
+    // if it is, the game is finished, show the result
 
   };
 

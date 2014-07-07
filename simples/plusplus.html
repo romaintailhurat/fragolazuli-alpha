@@ -15,13 +15,13 @@
 <body>
   <div class="container-fluid" ng-controller="MainCtrl">
     <div class="row">
-      <span class="factors" ng-repeat="factor in data.factors"> {{ factor }}</span>
+      <span class="col-xs-3 factors" ng-repeat="factor in data.factors"> {{ factor }}</span>
     </div>
     <div class="row" ng-repeat="(ri, row) in data.grid">
-      <span id="{{ri}}-{{ci}}" ng-click="clickCell($event)" ng-repeat="(ci,cell) in row"> {{ cell }}</span>
+      <span class="col-xs-3" id="{{ri}}-{{ci}}" ng-click="clickCell($event)" ng-repeat="(ci,cell) in row"> {{ cell }}</span>
     </div>
-    <div clas="row">
-      <span class="target" ng-repeat="t in data.targets"> {{ t }}</span>
+    <div class="row">
+      <span class="col-xs-3 target" ng-repeat="t in data.targets"> {{ t }}</span>
     </div>
   </div>
 </body>

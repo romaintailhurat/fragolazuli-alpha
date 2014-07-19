@@ -39,6 +39,7 @@ Computation module.
 */
 PP.factory('compute', function () {
   return {
+    /* FIXME the factor must be get from factors value */
     getFactorNum : function (cellNum) {
       if(cellNum === 4) {
         return 1;
@@ -48,6 +49,9 @@ PP.factory('compute', function () {
     },
     getNewValue : function (currentValue, factor) {
       return (currentValue + factor) % 9;
+    },
+    getRandomZeroNine : function () {
+      return Math.floor(Math.random() * 10);
     }
   };
 });
@@ -65,13 +69,17 @@ PP.controller('MainCtrl',
 
   $scope.data = {
   factors : {
-    f1 : 1,
-    f2 : 2,
-    f3 : 3,
-    f4 : 4
+    f1 : compute.getRandomZeroNine(),
+    f2 : compute.getRandomZeroNine(),
+    f3 : compute.getRandomZeroNine(),
+    f4 : compute.getRandomZeroNine()
   },
   grid : {
-    r1 : {c1 : 2, c2 : 0, c3 : 9, c4 : 2},
+    r1 : {
+      c1 : compute.getRandomZeroNine(),
+      c2 : compute.getRandomZeroNine(),
+      c3 : compute.getRandomZeroNine(),
+      c4 : compute.getRandomZeroNine()},
     r2 : {c1 : '-', c2 : '-', c3 : '-', c4 : '-'},
     r3 : {c1 : '-', c2 : '-', c3 : '-', c4 : '-'},
     r4 : {c1 : '-', c2 : '-', c3 : '-', c4 : '-'}
@@ -104,7 +112,7 @@ PP.controller('MainCtrl',
         $scope.data.grid[row][cell] = '-';
       }
     }
-    
+
 
     // TODO
     // check if it is the last column being dropped to zero

@@ -48,7 +48,7 @@ PP.factory('compute', function () {
       }
     },
     getNewValue : function (currentValue, factor) {
-      return (currentValue + factor) % 9;
+      return (currentValue + factor) % 10;
     },
     getRandomZeroNine : function () {
       return Math.floor(Math.random() * 10);

@@ -12,7 +12,7 @@ This module contains various game logic functions.
 PP.factory('logic', function () {
 
   return {
-    isLastCell : function (extract, row, grid) {
+    isLastColumn : function (extract, row, grid) {
       return extract.position(row) === _.size(grid);
     }
   };
@@ -52,6 +52,17 @@ PP.factory('compute', function () {
     },
     getRandomZeroNine : function () {
       return Math.floor(Math.random() * 10);
+    },
+    // Maybe in another module ?
+    glideArray : function (array) {
+      var item = array.pop();
+      array.unshift(item);
+      return array;
+    },
+    glideFactors : function (currentFactors, newFactorsArray) {
+      // currentFactors must be an object
+
+
     }
   };
 });
@@ -96,27 +107,32 @@ PP.controller('MainCtrl',
     var currId = e.currentTarget.id,
         split = currId.split('-'),
         row = split[0],
-        cell = split[1],
+        column = split[1],
         nextRowPos = extract.position(row)+1,
-        factorNum = compute.getFactorNum(extract.position(cell)),
+        factorNum = compute.getFactorNum(extract.position(column)),
         factor = 'f' + factorNum,
-        currentValue = $scope.data.grid[row][cell],
+        currentValue = $scope.data.grid[row][column],
         newValue = compute.getNewValue(currentValue, $scope.data.factors[factor]);
 
     if (currentValue !== '-') {
       // It's a number cell, act !
-      if (!logic.isLastCell(extract, row, $scope.data.grid)) {
-        $scope.data.grid[row][cell] = '-';
-        $scope.data.grid['r'+nextRowPos][cell] = newValue;
+      if (!logic.isLastColumn(extract, row, $scope.data.grid)) {
+        $scope.data.grid[row][column] = '-';
+        $scope.data.grid['r'+nextRowPos][column] = newValue;
+        // ZONE DE TRAVAUX
+        // TODO Glide factors
+        var newFactorsArray = compute.glideArray(_.values($scope.data.factors));
+        var factorPosition = 1;
+        _($scope.data.factors).forEach( function() {
+          $scope.data.factors['f'+factorPosition] = newFactorsArray[factorPosition - 1];
+          factorPosition++;
+          } );
+        // ZONE DE TRAVAUX
       } else {
-        $scope.data.grid[row][cell] = '-';
+        $scope.data.grid[row][column] = '-';
+        $scope.data.targets['t'+extract.position(column)] = newValue;
       }
     }
-
-
-    // TODO
-    // check if it is the last column being dropped to zero
-    // if it is, the game is finished, show the result
 
   };
 

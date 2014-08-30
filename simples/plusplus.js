@@ -39,13 +39,9 @@ Computation module.
 */
 PP.factory('compute', function () {
   return {
-    /* FIXME the factor must be get from factors value */
+    /* FIXME delete this function ? */
     getFactorNum : function (cellNum) {
-      if(cellNum === 4) {
-        return 1;
-      } else {
-        return cellNum + 1;
-      }
+      return cellNum;
     },
     getNewValue : function (currentValue, factor) {
       return (currentValue + factor) % 10;
@@ -59,9 +55,20 @@ PP.factory('compute', function () {
       array.unshift(item);
       return array;
     },
-    glideFactors : function (currentFactors, newFactorsArray) {
-      // currentFactors must be an object
-
+    /*
+    Mutate factors object by "gliding" them.
+     */
+    glideFactors : function (currentFactors, glideFunction) {
+      // FIXME make the code clearer using a codeFactors parameter
+      // Factors object values are put in an array that is "glided".
+      // Then we mutate the current factors object
+      var newFactorsArray = glideFunction(_.values(currentFactors));
+      var factorPosition = 1;
+      _(currentFactors).forEach( function() {
+        currentFactors['f'+factorPosition] = newFactorsArray[factorPosition - 1];
+        factorPosition++;
+        } );
+      return currentFactors;
 
     }
   };
@@ -119,18 +126,11 @@ PP.controller('MainCtrl',
       if (!logic.isLastColumn(extract, row, $scope.data.grid)) {
         $scope.data.grid[row][column] = '-';
         $scope.data.grid['r'+nextRowPos][column] = newValue;
-        // ZONE DE TRAVAUX
-        // TODO Glide factors
-        var newFactorsArray = compute.glideArray(_.values($scope.data.factors));
-        var factorPosition = 1;
-        _($scope.data.factors).forEach( function() {
-          $scope.data.factors['f'+factorPosition] = newFactorsArray[factorPosition - 1];
-          factorPosition++;
-          } );
-        // ZONE DE TRAVAUX
+        $scope.data.factors = compute.glideFactors($scope.data.factors, compute.glideArray);
       } else {
         $scope.data.grid[row][column] = '-';
         $scope.data.targets['t'+extract.position(column)] = newValue;
+        $scope.data.factors = compute.glideFactors($scope.data.factors, compute.glideArray);
       }
     }
 

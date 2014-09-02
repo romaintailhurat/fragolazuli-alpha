@@ -1,5 +1,12 @@
+@import url(http://fonts.googleapis.com/css?family=Ubuntu);
+
 body {
-  font-size : 6em;
+  font-size : 4em;
+  font-family : Ubuntu;
+}
+
+.plus {
+  font-size : 0.5em;
 }
 
 .factors {

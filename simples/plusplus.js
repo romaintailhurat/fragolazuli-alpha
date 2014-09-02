@@ -124,10 +124,12 @@ PP.controller('MainCtrl',
     if (currentValue !== '-') {
       // It's a number cell, act !
       if (!logic.isLastColumn(extract, row, $scope.data.grid)) {
+        // FIXME Refactor to a method
         $scope.data.grid[row][column] = '-';
         $scope.data.grid['r'+nextRowPos][column] = newValue;
         $scope.data.factors = compute.glideFactors($scope.data.factors, compute.glideArray);
       } else {
+        // FIXME Refactor to a method
         $scope.data.grid[row][column] = '-';
         $scope.data.targets['t'+extract.position(column)] = newValue;
         $scope.data.factors = compute.glideFactors($scope.data.factors, compute.glideArray);

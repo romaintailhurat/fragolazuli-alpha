@@ -4,18 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="plusplus.css" rel="stylesheet" type="text/css" />
+
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
   <script src="http://code.jquery.com/jquery.min.js"></script>
   <script src="http://getbootstrap.com/dist/js/bootstrap.js"></script>
   <script src="/javascript/lib/lodash.min.js"></script>
   <script src="plusplus.js"></script>
+
   <title>+ +</title>
 </head>
 <body>
   <div class="container-fluid" ng-controller="MainCtrl">
     <div class="row">
       <span class="col-xs-3 factors" ng-repeat="factor in data.factors"> {{ factor }}</span>
+    </div>
+    <div class="row">
+      <span class="col-xs-3 plus" ng-repeat="factor in data.factors">
+        <i class="fa fa-plus fa-lg"></i>
+      </span>
     </div>
     <div class="row" ng-repeat="(ri, row) in data.grid">
       <span class="col-xs-3" id="{{ri}}-{{ci}}" ng-click="clickCell($event)" ng-repeat="(ci,cell) in row"> {{ cell }}</span>
